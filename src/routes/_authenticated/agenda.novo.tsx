@@ -128,7 +128,13 @@ function NovoAgendamentoPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="data">Data *</Label>
-                  <Input id="data" name="data" type="date" required />
+                  <Input
+                    id="data"
+                    name="data"
+                    type="date"
+                    required
+                    min={new Date().toISOString().slice(0, 10)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="hora">Hora *</Label>
