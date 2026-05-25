@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Calendar as CalIcon, X } from "lucide-react";
+import { Plus, Calendar as CalIcon, X, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/agenda")({
@@ -157,6 +157,16 @@ function AgendaPage() {
                       <Badge variant={statusVariant[a.status]} className="capitalize">
                         {a.status}
                       </Badge>
+                      {a.status !== "cancelado" && a.paciente && (a.aluno_id === user?.id || role === "professor_admin") && (
+                        <Button asChild variant="outline" size="sm">
+                          <Link
+                            to="/prontuarios/novo"
+                            search={{ paciente: a.paciente.id, agendamento: a.id }}
+                          >
+                            <Stethoscope className="h-4 w-4 mr-1" /> Atender
+                          </Link>
+                        </Button>
+                      )}
                       {podeCancelar && (
                         <Button
                           variant="ghost"
