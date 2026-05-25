@@ -113,9 +113,9 @@ function LoginPage() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Cadastrar</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-stone-200">
+              <TabsTrigger value="login" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Entrar</TabsTrigger>
+              <TabsTrigger value="signup" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Cadastrar</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
@@ -130,14 +130,14 @@ function LoginPage() {
                     <button
                       type="button"
                       onClick={() => navigate({ to: "/esqueci-senha" })}
-                      className="text-xs text-primary hover:underline"
+                      className="text-xs text-stone-700 hover:underline"
                     >
                       Esqueci minha senha
                     </button>
                   </div>
                   <Input id="login-senha" name="senha" type="password" required autoComplete="current-password" />
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
                   {loading ? "Entrando..." : "Entrar"}
                 </Button>
               </form>
@@ -176,7 +176,7 @@ function LoginPage() {
                     </label>
                   </RadioGroup>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
                   {loading ? "Cadastrando..." : "Criar conta"}
                 </Button>
               </form>

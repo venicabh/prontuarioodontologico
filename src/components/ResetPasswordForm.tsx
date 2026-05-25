@@ -76,7 +76,7 @@ export function ResetPasswordForm() {
                 <Label htmlFor="confirma">Confirmar senha</Label>
                 <Input id="confirma" name="confirma" type="password" required minLength={6} autoComplete="new-password" />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
                 {loading ? "Salvando..." : "Redefinir senha"}
               </Button>
             </form>
