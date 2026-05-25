@@ -112,7 +112,16 @@ function LoginPage() {
                   <Input id="login-email" name="email" type="email" required autoComplete="email" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-senha">Senha</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="login-senha">Senha</Label>
+                    <button
+                      type="button"
+                      onClick={() => navigate({ to: "/esqueci-senha" })}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Esqueci minha senha
+                    </button>
+                  </div>
                   <Input id="login-senha" name="senha" type="password" required autoComplete="current-password" />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
