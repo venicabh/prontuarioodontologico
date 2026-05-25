@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ type Paciente = {
 };
 
 function PacientesPage() {
+  const location = useLocation();
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState("");
@@ -46,6 +47,10 @@ function PacientesPage() {
     if (!q) return true;
     return p.nome.toLowerCase().includes(q) || p.cpf.includes(q.replace(/\D/g, ""));
   });
+
+  if (location.pathname !== "/pacientes") {
+    return <Outlet />;
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
