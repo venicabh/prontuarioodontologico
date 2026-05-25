@@ -1,5 +1,6 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
+import { ResetPasswordForm } from "@/components/ResetPasswordForm";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -15,12 +16,7 @@ function Index() {
       window.location.search.includes("type=recovery") ||
       window.location.search.includes("reset-password=1"))
   ) {
-    return (
-      <Navigate
-        to="/reset-password"
-        hash={window.location.hash.slice(1)}
-      />
-    );
+    return <ResetPasswordForm />;
   }
 
   if (loading)
