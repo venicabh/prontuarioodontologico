@@ -168,6 +168,28 @@ export function PacienteForm({
               onChange={(e) => set("endereco", e.target.value)}
             />
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="alergias">Alergias</Label>
+              <Textarea
+                id="alergias"
+                rows={3}
+                placeholder="Ex.: penicilina, látex..."
+                value={values.alergias}
+                onChange={(e) => set("alergias", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doencas_preexistentes">Doenças pré-existentes</Label>
+              <Textarea
+                id="doencas_preexistentes"
+                rows={3}
+                placeholder="Ex.: diabetes, hipertensão..."
+                value={values.doencas_preexistentes}
+                onChange={(e) => set("doencas_preexistentes", e.target.value)}
+              />
+            </div>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="observacoes">Observações</Label>
             <Textarea
