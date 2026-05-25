@@ -1,15 +1,34 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Users, ClipboardList, CheckSquare, Package, FileText } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Users, ClipboardList, CheckSquare, Package, FileText, UserCog } from "lucide-react";
+import type { AppRole } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/inicio")({
   component: InicioPage,
 });
 
+type Feature = {
+  to: string;
+  icon: typeof Calendar;
+  title: string;
+  description: string;
+  roles: AppRole[];
+};
+
+const FEATURES: Feature[] = [
+  { to: "/agenda", icon: Calendar, title: "Agenda", description: "Visualize, agende, remarque ou cancele consultas.", roles: ["aluno", "professor_admin"] },
+  { to: "/pacientes", icon: Users, title: "Pacientes", description: "Cadastre e edite informações dos pacientes.", roles: ["aluno", "professor_admin"] },
+  { to: "/prontuarios", icon: ClipboardList, title: "Prontuários", description: "Registre procedimentos e preencha prontuários.", roles: ["aluno", "professor_admin"] },
+  { to: "/materiais", icon: Package, title: "Materiais", description: "Consulte e controle o estoque de materiais.", roles: ["aluno", "professor_admin"] },
+  { to: "/validacoes", icon: CheckSquare, title: "Validações", description: "Aprove ou rejeite prontuários pendentes.", roles: ["professor_admin"] },
+  { to: "/relatorios", icon: FileText, title: "Relatórios", description: "Gere relatórios de atendimentos e procedimentos.", roles: ["professor_admin"] },
+  { to: "/usuarios", icon: UserCog, title: "Usuários", description: "Gerencie acessos e papéis do sistema.", roles: ["professor_admin"] },
+];
+
 function InicioPage() {
   const { user, role } = useAuth();
-  const isProfessor = role === "professor_admin";
+  const items = FEATURES.filter((f) => role && f.roles.includes(role));
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -19,78 +38,27 @@ function InicioPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <FeatureCard
-          icon={Calendar}
-          title="Agenda"
-          description="Visualize, agende, remarque ou cancele consultas."
-        />
-        <FeatureCard
-          icon={Users}
-          title="Pacientes"
-          description="Cadastre e edite informações dos pacientes."
-        />
-        <FeatureCard
-          icon={ClipboardList}
-          title="Prontuários"
-          description="Registre procedimentos e preencha prontuários."
-        />
-        {isProfessor && (
-          <>
-            <FeatureCard
-              icon={CheckSquare}
-              title="Validações"
-              description="Aprove ou rejeite prontuários pendentes."
-            />
-            <FeatureCard
-              icon={Package}
-              title="Materiais"
-              description="Controle uso e esterilização de materiais."
-            />
-            <FeatureCard
-              icon={FileText}
-              title="Relatórios"
-              description="Gere relatórios de atendimentos e procedimentos."
-            />
-          </>
-        )}
+        {items.map((f) => {
+          const Icon = f.icon;
+          return (
+            <Link key={f.to} to={f.to} className="block">
+              <Card className="h-full transition-colors hover:bg-accent">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-md bg-primary/10 text-primary">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base">{f.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{f.description}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Em construção</CardTitle>
-          <CardDescription>
-            Esta é a Fase 1 do sistema: autenticação e estrutura. As próximas
-            fases adicionarão Pacientes, Agenda, Atendimento, Validação e
-            demais funcionalidades dos diagramas UML.
-          </CardDescription>
-        </CardHeader>
-      </Card>
     </div>
-  );
-}
-
-function FeatureCard({
-  icon: Icon,
-  title,
-  description,
-}: {
-  icon: typeof Calendar;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-md bg-primary/10 text-primary">
-            <Icon className="h-5 w-5" />
-          </div>
-          <CardTitle className="text-base">{title}</CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
   );
 }
