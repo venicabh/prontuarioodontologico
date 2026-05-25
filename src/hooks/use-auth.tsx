@@ -4,6 +4,20 @@ import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole = "aluno" | "professor_admin";
 
+// Captura no carregamento do módulo (antes do Supabase processar o hash)
+const IS_RECOVERY_FLOW =
+  typeof window !== "undefined" &&
+  (window.location.hash.includes("type=recovery") ||
+    window.location.search.includes("type=recovery"));
+
+if (
+  IS_RECOVERY_FLOW &&
+  typeof window !== "undefined" &&
+  window.location.pathname !== "/reset-password"
+) {
+  window.history.replaceState(null, "", "/reset-password" + window.location.hash);
+}
+
 interface AuthContextValue {
   user: User | null;
   session: Session | null;
@@ -20,10 +34,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      // Em fluxo de recuperação, não tratar como login normal
+      if (event === "PASSWORD_RECOVERY" || IS_RECOVERY_FLOW) {
+        if (window.location.pathname !== "/reset-password") {
+          window.location.replace("/reset-password");
+        }
+        return;
+      }
       setSession(s);
       if (s?.user) {
-        // defer to avoid deadlock
         setTimeout(() => fetchRole(s.user.id), 0);
       } else {
         setRole(null);
@@ -31,6 +51,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (IS_RECOVERY_FLOW) {
+        setLoading(false);
+        return;
+      }
       setSession(s);
       if (s?.user) {
         fetchRole(s.user.id).finally(() => setLoading(false));
