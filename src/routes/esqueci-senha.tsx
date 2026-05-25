@@ -62,7 +62,7 @@ function ForgotPasswordPage() {
                 <Label htmlFor="email">E-mail</Label>
                 <Input id="email" name="email" type="email" required autoComplete="email" />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
                 {loading ? "Enviando..." : "Enviar link"}
               </Button>
             </form>
