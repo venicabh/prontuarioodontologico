@@ -8,10 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/reset-password")({
-  component: ResetPasswordPage,
+  component: ResetPasswordForm,
 });
 
-function ResetPasswordPage() {
+export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
 
