@@ -1,6 +1,6 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { ResetPasswordForm } from "./reset-password";
+import { ResetPasswordForm } from "@/components/ResetPasswordForm";
 
 export const Route = createFileRoute("/")({
   component: Index,
