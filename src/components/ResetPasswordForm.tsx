@@ -46,15 +46,14 @@ export function ResetPasswordForm() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center px-4 relative overflow-hidden"
+      className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
       style={{
         backgroundImage: "url(/dentista-bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-black/50" />
-      <Card className="w-full max-w-md relative z-10">
+      <Card className="w-full max-w-md relative z-10 shadow-2xl border-primary/20">
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 p-3 rounded-full bg-primary/10 w-fit">
             <OdontoSymbol className="h-8 w-8 text-primary" />
