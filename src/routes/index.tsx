@@ -18,7 +18,6 @@ function Index() {
     return (
       <Navigate
         to="/reset-password"
-        search={window.location.search.slice(1)}
         hash={window.location.hash.slice(1)}
       />
     );
