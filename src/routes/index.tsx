@@ -7,7 +7,18 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { session, loading } = useAuth();
-  if (loading) return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Carregando...</div>;
+
+  // Se chegou um link de recuperação de senha na raiz, redireciona preservando o hash
+  if (typeof window !== "undefined" && window.location.hash.includes("type=recovery")) {
+    return <Navigate to="/reset-password" hash={window.location.hash.slice(1)} />;
+  }
+
+  if (loading)
+    return (
+      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+        Carregando...
+      </div>
+    );
   if (!session) return <Navigate to="/login" />;
   return <Navigate to="/inicio" />;
 }
