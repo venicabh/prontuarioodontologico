@@ -67,6 +67,10 @@ function NovoAgendamentoPage() {
       toast.error("Data/hora inválida");
       return;
     }
+    if (data_hora.getTime() < Date.now()) {
+      toast.error("Não é possível agendar para uma data/hora no passado");
+      return;
+    }
 
     setLoading(true);
     const { error } = await supabase.from("agendamentos").insert({
