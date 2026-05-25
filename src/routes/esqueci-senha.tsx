@@ -36,9 +36,11 @@ function ForgotPasswordPage() {
     <div
       className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
       style={{
+        backgroundColor: "#cfcac4",
         backgroundImage: "url(/dentista-bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-sky-200/60 bg-white/95 backdrop-blur-sm">
