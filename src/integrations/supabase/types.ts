@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      agendamentos: {
+        Row: {
+          aluno_id: string
+          created_at: string
+          data_hora: string
+          duracao_minutos: number
+          id: string
+          observacoes: string | null
+          paciente_id: string
+          procedimento: string | null
+          status: Database["public"]["Enums"]["agendamento_status"]
+          updated_at: string
+        }
+        Insert: {
+          aluno_id: string
+          created_at?: string
+          data_hora: string
+          duracao_minutos?: number
+          id?: string
+          observacoes?: string | null
+          paciente_id: string
+          procedimento?: string | null
+          status?: Database["public"]["Enums"]["agendamento_status"]
+          updated_at?: string
+        }
+        Update: {
+          aluno_id?: string
+          created_at?: string
+          data_hora?: string
+          duracao_minutos?: number
+          id?: string
+          observacoes?: string | null
+          paciente_id?: string
+          procedimento?: string | null
+          status?: Database["public"]["Enums"]["agendamento_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agendamentos_paciente_id_fkey"
+            columns: ["paciente_id"]
+            isOneToOne: false
+            referencedRelation: "pacientes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pacientes: {
+        Row: {
+          cpf: string
+          created_at: string
+          criado_por: string
+          data_nascimento: string | null
+          email: string | null
+          endereco: string | null
+          id: string
+          nome: string
+          observacoes: string | null
+          telefone: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpf: string
+          created_at?: string
+          criado_por: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          nome: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpf?: string
+          created_at?: string
+          criado_por?: string
+          data_nascimento?: string | null
+          email?: string | null
+          endereco?: string | null
+          id?: string
+          nome?: string
+          observacoes?: string | null
+          telefone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -70,6 +159,7 @@ export type Database = {
       }
     }
     Enums: {
+      agendamento_status: "agendado" | "realizado" | "cancelado" | "faltou"
       app_role: "aluno" | "professor_admin"
     }
     CompositeTypes: {
@@ -198,6 +288,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agendamento_status: ["agendado", "realizado", "cancelado", "faltou"],
       app_role: ["aluno", "professor_admin"],
     },
   },
