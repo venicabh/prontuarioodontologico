@@ -79,6 +79,8 @@ export function PacienteForm({
       telefone: parsed.data.telefone || null,
       email: parsed.data.email || null,
       endereco: parsed.data.endereco || null,
+      alergias: parsed.data.alergias || null,
+      doencas_preexistentes: parsed.data.doencas_preexistentes || null,
       observacoes: parsed.data.observacoes || null,
     };
 
