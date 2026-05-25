@@ -3,8 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Activity,
+  AlertOctagon,
   CalendarClock,
   ClipboardList,
+  HeartPulse,
   Stethoscope,
   TrendingUp,
 } from "lucide-react";
