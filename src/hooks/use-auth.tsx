@@ -14,12 +14,13 @@ const IS_RECOVERY_FLOW =
 if (
   IS_RECOVERY_FLOW &&
   typeof window !== "undefined" &&
+  window.location.pathname !== "/" &&
   window.location.pathname !== "/reset-password"
 ) {
   window.history.replaceState(
     null,
     "",
-    "/reset-password" + window.location.search + window.location.hash,
+    "/" + window.location.search + window.location.hash,
   );
 }
 
@@ -42,9 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
       // Em fluxo de recuperação, não tratar como login normal
       if (event === "PASSWORD_RECOVERY" || IS_RECOVERY_FLOW) {
-        if (window.location.pathname !== "/reset-password") {
-          window.location.replace("/reset-password");
-        }
+        setSession(s);
+        setLoading(false);
         return;
       }
       setSession(s);
