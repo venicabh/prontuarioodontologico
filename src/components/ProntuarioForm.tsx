@@ -260,6 +260,10 @@ export function ProntuarioForm({
         </Card>
       )}
 
+      {form.paciente_id && (
+        <ResumoPaciente pacienteId={form.paciente_id} currentProntuarioId={prontuarioId} />
+      )}
+
       {/* Tabs */}
       <Tabs defaultValue="resumo" className="space-y-4">
         <TabsList>
