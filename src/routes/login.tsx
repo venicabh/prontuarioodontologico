@@ -113,9 +113,9 @@ function LoginPage() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Cadastrar</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 bg-stone-200">
+              <TabsTrigger value="login" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Entrar</TabsTrigger>
+              <TabsTrigger value="signup" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Cadastrar</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
