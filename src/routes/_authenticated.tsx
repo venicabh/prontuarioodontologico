@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { LogOut, Home, Calendar, Users, ClipboardList, CheckSquare, Package, FileText, UserCog } from "lucide-react";
 import type { AppRole } from "@/hooks/use-auth";
+import { OdontoSymbol } from "@/components/OdontoSymbol";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -42,7 +43,10 @@ function AuthLayout() {
     <div className="flex min-h-screen bg-muted/20">
       <aside className="w-64 border-r bg-card flex flex-col">
         <div className="p-4 border-b">
-          <h1 className="font-semibold text-sm leading-tight">Prontuário Odontológico</h1>
+          <div className="flex items-center gap-2">
+            <OdontoSymbol className="h-5 w-5 text-primary shrink-1" />
+            <h1 className="font-semibold text-sm leading-tight">Prontuário Odontológico</h1>
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
             {role === "professor_admin" ? "Professor/Admin" : "Aluno"}
           </p>
