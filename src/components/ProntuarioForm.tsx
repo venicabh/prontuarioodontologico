@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Odontograma, type DentesMarcados } from "@/components/Odontograma";
+import { ResumoPaciente } from "@/components/ResumoPaciente";
 import { toast } from "sonner";
 import { z } from "zod";
 import { User, AlertTriangle } from "lucide-react";
@@ -257,6 +258,10 @@ export function ProntuarioForm({
             <p className="text-sm">{initial.motivo_rejeicao}</p>
           </CardContent>
         </Card>
+      )}
+
+      {form.paciente_id && (
+        <ResumoPaciente pacienteId={form.paciente_id} currentProntuarioId={prontuarioId} />
       )}
 
       {/* Tabs */}
