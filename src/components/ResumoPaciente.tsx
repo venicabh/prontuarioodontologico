@@ -3,8 +3,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Activity,
+  AlertOctagon,
   CalendarClock,
   ClipboardList,
+  HeartPulse,
   Stethoscope,
   TrendingUp,
 } from "lucide-react";
@@ -62,6 +64,10 @@ function summarizeDentes(dentes: DentesMarcados | null | undefined) {
 export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
   const [prontuarios, setProntuarios] = useState<ProntuarioRow[]>([]);
   const [agendamentos, setAgendamentos] = useState<AgendamentoRow[]>([]);
+  const [paciente, setPaciente] = useState<{
+    alergias: string | null;
+    doencas_preexistentes: string | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -84,10 +90,18 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
         .neq("status", "cancelado")
         .order("data_hora", { ascending: true })
         .limit(5),
-    ]).then(([p, a]) => {
+      supabase
+        .from("pacientes")
+        .select("alergias, doencas_preexistentes")
+        .eq("id", pacienteId)
+        .maybeSingle(),
+    ]).then(([p, a, pac]) => {
       if (cancelled) return;
       setProntuarios((p.data as ProntuarioRow[] | null) ?? []);
       setAgendamentos((a.data as AgendamentoRow[] | null) ?? []);
+      setPaciente(
+        (pac.data as { alergias: string | null; doencas_preexistentes: string | null } | null) ?? null,
+      );
       setLoading(false);
     });
 
@@ -95,6 +109,7 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
       cancelled = true;
     };
   }, [pacienteId]);
+
 
   const outros = prontuarios.filter((p) => p.id !== currentProntuarioId);
   const ultimo = outros[0];
@@ -140,6 +155,35 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
             <span className="text-xs text-muted-foreground">Carregando...</span>
           )}
         </div>
+
+        {(paciente?.alergias || paciente?.doencas_preexistentes) && (
+          <div className="grid gap-3 sm:grid-cols-2 mb-3">
+            {paciente?.alergias && (
+              <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40 p-3">
+                <AlertOctagon className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-red-900 dark:text-red-200 uppercase tracking-wide">
+                    Alergias
+                  </p>
+                  <p className="text-sm text-red-900 dark:text-red-100">{paciente.alergias}</p>
+                </div>
+              </div>
+            )}
+            {paciente?.doencas_preexistentes && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-900/40 p-3">
+                <HeartPulse className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 uppercase tracking-wide">
+                    Doenças pré-existentes
+                  </p>
+                  <p className="text-sm text-amber-900 dark:text-amber-100">
+                    {paciente.doencas_preexistentes}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {/* Último Exame Dentário */}

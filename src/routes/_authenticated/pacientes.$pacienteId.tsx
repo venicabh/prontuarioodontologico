@@ -32,6 +32,9 @@ function EditarPacientePage() {
           telefone: data.telefone ?? "",
           email: data.email ?? "",
           endereco: data.endereco ?? "",
+          alergias: (data as { alergias?: string | null }).alergias ?? "",
+          doencas_preexistentes:
+            (data as { doencas_preexistentes?: string | null }).doencas_preexistentes ?? "",
           observacoes: data.observacoes ?? "",
         });
       });

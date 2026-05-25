@@ -134,10 +134,12 @@ export type Database = {
       }
       pacientes: {
         Row: {
+          alergias: string | null
           cpf: string
           created_at: string
           criado_por: string
           data_nascimento: string | null
+          doencas_preexistentes: string | null
           email: string | null
           endereco: string | null
           id: string
@@ -147,10 +149,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          alergias?: string | null
           cpf: string
           created_at?: string
           criado_por: string
           data_nascimento?: string | null
+          doencas_preexistentes?: string | null
           email?: string | null
           endereco?: string | null
           id?: string
@@ -160,10 +164,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          alergias?: string | null
           cpf?: string
           created_at?: string
           criado_por?: string
           data_nascimento?: string | null
+          doencas_preexistentes?: string | null
           email?: string | null
           endereco?: string | null
           id?: string

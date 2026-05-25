@@ -17,6 +17,8 @@ export type PacienteFormValues = {
   telefone: string;
   email: string;
   endereco: string;
+  alergias: string;
+  doencas_preexistentes: string;
   observacoes: string;
 };
 
@@ -27,6 +29,8 @@ const schema = z.object({
   telefone: z.string().max(30).optional(),
   email: z.string().email("E-mail inválido").max(255).optional().or(z.literal("")),
   endereco: z.string().max(500).optional(),
+  alergias: z.string().max(1000).optional(),
+  doencas_preexistentes: z.string().max(1000).optional(),
   observacoes: z.string().max(2000).optional(),
 });
 
@@ -37,6 +41,8 @@ const EMPTY: PacienteFormValues = {
   telefone: "",
   email: "",
   endereco: "",
+  alergias: "",
+  doencas_preexistentes: "",
   observacoes: "",
 };
 
@@ -73,6 +79,8 @@ export function PacienteForm({
       telefone: parsed.data.telefone || null,
       email: parsed.data.email || null,
       endereco: parsed.data.endereco || null,
+      alergias: parsed.data.alergias || null,
+      doencas_preexistentes: parsed.data.doencas_preexistentes || null,
       observacoes: parsed.data.observacoes || null,
     };
 
@@ -159,6 +167,28 @@ export function PacienteForm({
               value={values.endereco}
               onChange={(e) => set("endereco", e.target.value)}
             />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="alergias">Alergias</Label>
+              <Textarea
+                id="alergias"
+                rows={3}
+                placeholder="Ex.: penicilina, látex..."
+                value={values.alergias}
+                onChange={(e) => set("alergias", e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="doencas_preexistentes">Doenças pré-existentes</Label>
+              <Textarea
+                id="doencas_preexistentes"
+                rows={3}
+                placeholder="Ex.: diabetes, hipertensão..."
+                value={values.doencas_preexistentes}
+                onChange={(e) => set("doencas_preexistentes", e.target.value)}
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="observacoes">Observações</Label>
