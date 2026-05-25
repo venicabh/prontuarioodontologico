@@ -41,12 +41,12 @@ function ForgotPasswordPage() {
         backgroundPosition: "center",
       }}
     >
-      <Card className="w-full max-w-md relative z-10 shadow-2xl border-primary/20">
+      <Card className="w-full max-w-md relative z-10 shadow-2xl border-sky-200/60 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-3 p-3 rounded-full bg-primary/10 w-fit">
-            <OdontoSymbol className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-3 p-3 rounded-full bg-sky-100 w-fit">
+            <OdontoSymbol className="h-8 w-8 text-sky-700" />
           </div>
-          <CardTitle className="text-2xl">Recuperar senha</CardTitle>
+          <CardTitle className="text-2xl text-slate-800">Recuperar senha</CardTitle>
           <CardDescription>
             {sent
               ? "Verifique seu e-mail e clique no link para redefinir a senha"

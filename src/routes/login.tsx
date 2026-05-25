@@ -101,13 +101,13 @@ function LoginPage() {
         backgroundPosition: "center",
       }}
     >
-      <Card className="w-full max-w-md relative z-10 shadow-2xl border-primary/20">
+      <Card className="w-full max-w-md relative z-10 shadow-2xl border-sky-200/60 bg-white/95 backdrop-blur-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-3 p-3 rounded-full bg-primary/10 w-fit">
-            <OdontoSymbol className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-3 p-3 rounded-full bg-sky-100 w-fit">
+            <OdontoSymbol className="h-8 w-8 text-sky-700" />
           </div>
-          <CardTitle className="text-2xl">Prontuário Odontológico Digital</CardTitle>
-          <CardDescription>Acesse o sistema com suas credenciais</CardDescription>
+          <CardTitle className="text-2xl text-slate-800">Prontuário Odontológico Digital</CardTitle>
+          <CardDescription className="text-slate-500">Acesse o sistema com suas credenciais</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login" className="w-full">
