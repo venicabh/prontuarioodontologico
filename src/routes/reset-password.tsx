@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ export const Route = createFileRoute("/reset-password")({
 });
 
 function ResetPasswordPage() {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
 
@@ -42,7 +41,7 @@ function ResetPasswordPage() {
     if (error) return toast.error(error.message);
     toast.success("Senha redefinida com sucesso");
     await supabase.auth.signOut();
-    navigate({ to: "/login" });
+    window.location.assign("/");
   };
 
   return (
