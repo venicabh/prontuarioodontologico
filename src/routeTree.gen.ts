@@ -13,8 +13,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedValidacoesRouteImport } from './routes/_authenticated/validacoes'
+import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedProntuariosRouteImport } from './routes/_authenticated/prontuarios'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
+import { Route as AuthenticatedMateriaisRouteImport } from './routes/_authenticated/materiais'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedProntuariosNovoRouteImport } from './routes/_authenticated/prontuarios.novo'
@@ -42,6 +45,16 @@ const AuthenticatedValidacoesRoute = AuthenticatedValidacoesRouteImport.update({
   path: '/validacoes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedProntuariosRoute =
   AuthenticatedProntuariosRouteImport.update({
     id: '/prontuarios',
@@ -51,6 +64,11 @@ const AuthenticatedProntuariosRoute =
 const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMateriaisRoute = AuthenticatedMateriaisRouteImport.update({
+  id: '/materiais',
+  path: '/materiais',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
@@ -98,8 +116,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/materiais': typeof AuthenticatedMateriaisRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -112,8 +133,11 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/materiais': typeof AuthenticatedMateriaisRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -128,8 +152,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/materiais': typeof AuthenticatedMateriaisRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/_authenticated/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/_authenticated/validacoes': typeof AuthenticatedValidacoesRoute
   '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/_authenticated/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -144,8 +171,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/agenda'
     | '/inicio'
+    | '/materiais'
     | '/pacientes'
     | '/prontuarios'
+    | '/relatorios'
+    | '/usuarios'
     | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
@@ -158,8 +188,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/agenda'
     | '/inicio'
+    | '/materiais'
     | '/pacientes'
     | '/prontuarios'
+    | '/relatorios'
+    | '/usuarios'
     | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
@@ -173,8 +206,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authenticated/agenda'
     | '/_authenticated/inicio'
+    | '/_authenticated/materiais'
     | '/_authenticated/pacientes'
     | '/_authenticated/prontuarios'
+    | '/_authenticated/relatorios'
+    | '/_authenticated/usuarios'
     | '/_authenticated/validacoes'
     | '/_authenticated/agenda/novo'
     | '/_authenticated/pacientes/$pacienteId'
@@ -219,6 +255,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedValidacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/usuarios': {
+      id: '/_authenticated/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof AuthenticatedUsuariosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/prontuarios': {
       id: '/_authenticated/prontuarios'
       path: '/prontuarios'
@@ -231,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/pacientes'
       fullPath: '/pacientes'
       preLoaderRoute: typeof AuthenticatedPacientesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/materiais': {
+      id: '/_authenticated/materiais'
+      path: '/materiais'
+      fullPath: '/materiais'
+      preLoaderRoute: typeof AuthenticatedMateriaisRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/inicio': {
@@ -333,16 +390,22 @@ const AuthenticatedProntuariosRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRouteWithChildren
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedMateriaisRoute: typeof AuthenticatedMateriaisRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRouteWithChildren
   AuthenticatedProntuariosRoute: typeof AuthenticatedProntuariosRouteWithChildren
+  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
+  AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
   AuthenticatedValidacoesRoute: typeof AuthenticatedValidacoesRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRouteWithChildren,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedMateriaisRoute: AuthenticatedMateriaisRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRouteWithChildren,
   AuthenticatedProntuariosRoute: AuthenticatedProntuariosRouteWithChildren,
+  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
+  AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
   AuthenticatedValidacoesRoute: AuthenticatedValidacoesRoute,
 }
 
