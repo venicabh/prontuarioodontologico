@@ -5,18 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { clearPasswordRecoverySession, hasPasswordRecoverySession, isPasswordRecoveryUrl } from "@/hooks/use-auth";
 
 export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(isPasswordRecoveryUrl() || hasPasswordRecoverySession());
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
+      if (event === "PASSWORD_RECOVERY") setReady(true);
     });
 
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
+      if (data.session && (isPasswordRecoveryUrl() || hasPasswordRecoverySession())) {
+        setReady(true);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -34,9 +37,10 @@ export function ResetPasswordForm() {
     const { error } = await supabase.auth.updateUser({ password: senha });
     setLoading(false);
     if (error) return toast.error(error.message);
+    clearPasswordRecoverySession();
     toast.success("Senha redefinida com sucesso");
     await supabase.auth.signOut();
-    window.location.assign("/");
+    window.location.assign("/login");
   };
 
   return (
