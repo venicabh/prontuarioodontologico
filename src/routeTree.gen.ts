@@ -12,9 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedValidacoesRouteImport } from './routes/_authenticated/validacoes'
+import { Route as AuthenticatedProntuariosRouteImport } from './routes/_authenticated/prontuarios'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as AuthenticatedProntuariosNovoRouteImport } from './routes/_authenticated/prontuarios.novo'
+import { Route as AuthenticatedProntuariosProntuarioIdRouteImport } from './routes/_authenticated/prontuarios.$prontuarioId'
 import { Route as AuthenticatedPacientesNovoRouteImport } from './routes/_authenticated/pacientes.novo'
 import { Route as AuthenticatedPacientesPacienteIdRouteImport } from './routes/_authenticated/pacientes.$pacienteId'
 import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated/agenda.novo'
@@ -33,6 +37,17 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedValidacoesRoute = AuthenticatedValidacoesRouteImport.update({
+  id: '/validacoes',
+  path: '/validacoes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProntuariosRoute =
+  AuthenticatedProntuariosRouteImport.update({
+    id: '/prontuarios',
+    path: '/prontuarios',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
@@ -48,6 +63,18 @@ const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
   path: '/agenda',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedProntuariosNovoRoute =
+  AuthenticatedProntuariosNovoRouteImport.update({
+    id: '/novo',
+    path: '/novo',
+    getParentRoute: () => AuthenticatedProntuariosRoute,
+  } as any)
+const AuthenticatedProntuariosProntuarioIdRoute =
+  AuthenticatedProntuariosProntuarioIdRouteImport.update({
+    id: '/$prontuarioId',
+    path: '/$prontuarioId',
+    getParentRoute: () => AuthenticatedProntuariosRoute,
+  } as any)
 const AuthenticatedPacientesNovoRoute =
   AuthenticatedPacientesNovoRouteImport.update({
     id: '/novo',
@@ -72,9 +99,13 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
   '/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
+  '/prontuarios/$prontuarioId': typeof AuthenticatedProntuariosProntuarioIdRoute
+  '/prontuarios/novo': typeof AuthenticatedProntuariosNovoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -82,9 +113,13 @@ export interface FileRoutesByTo {
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
   '/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
+  '/prontuarios/$prontuarioId': typeof AuthenticatedProntuariosProntuarioIdRoute
+  '/prontuarios/novo': typeof AuthenticatedProntuariosNovoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -94,9 +129,13 @@ export interface FileRoutesById {
   '/_authenticated/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/_authenticated/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
+  '/_authenticated/validacoes': typeof AuthenticatedValidacoesRoute
   '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/_authenticated/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
   '/_authenticated/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
+  '/_authenticated/prontuarios/$prontuarioId': typeof AuthenticatedProntuariosProntuarioIdRoute
+  '/_authenticated/prontuarios/novo': typeof AuthenticatedProntuariosNovoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,9 +145,13 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/inicio'
     | '/pacientes'
+    | '/prontuarios'
+    | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
     | '/pacientes/novo'
+    | '/prontuarios/$prontuarioId'
+    | '/prontuarios/novo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -116,9 +159,13 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/inicio'
     | '/pacientes'
+    | '/prontuarios'
+    | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
     | '/pacientes/novo'
+    | '/prontuarios/$prontuarioId'
+    | '/prontuarios/novo'
   id:
     | '__root__'
     | '/'
@@ -127,9 +174,13 @@ export interface FileRouteTypes {
     | '/_authenticated/agenda'
     | '/_authenticated/inicio'
     | '/_authenticated/pacientes'
+    | '/_authenticated/prontuarios'
+    | '/_authenticated/validacoes'
     | '/_authenticated/agenda/novo'
     | '/_authenticated/pacientes/$pacienteId'
     | '/_authenticated/pacientes/novo'
+    | '/_authenticated/prontuarios/$prontuarioId'
+    | '/_authenticated/prontuarios/novo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -161,6 +212,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/validacoes': {
+      id: '/_authenticated/validacoes'
+      path: '/validacoes'
+      fullPath: '/validacoes'
+      preLoaderRoute: typeof AuthenticatedValidacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/prontuarios': {
+      id: '/_authenticated/prontuarios'
+      path: '/prontuarios'
+      fullPath: '/prontuarios'
+      preLoaderRoute: typeof AuthenticatedProntuariosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pacientes': {
       id: '/_authenticated/pacientes'
       path: '/pacientes'
@@ -181,6 +246,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/agenda'
       preLoaderRoute: typeof AuthenticatedAgendaRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/prontuarios/novo': {
+      id: '/_authenticated/prontuarios/novo'
+      path: '/novo'
+      fullPath: '/prontuarios/novo'
+      preLoaderRoute: typeof AuthenticatedProntuariosNovoRouteImport
+      parentRoute: typeof AuthenticatedProntuariosRoute
+    }
+    '/_authenticated/prontuarios/$prontuarioId': {
+      id: '/_authenticated/prontuarios/$prontuarioId'
+      path: '/$prontuarioId'
+      fullPath: '/prontuarios/$prontuarioId'
+      preLoaderRoute: typeof AuthenticatedProntuariosProntuarioIdRouteImport
+      parentRoute: typeof AuthenticatedProntuariosRoute
     }
     '/_authenticated/pacientes/novo': {
       id: '/_authenticated/pacientes/novo'
@@ -234,16 +313,37 @@ const AuthenticatedPacientesRouteWithChildren =
     AuthenticatedPacientesRouteChildren,
   )
 
+interface AuthenticatedProntuariosRouteChildren {
+  AuthenticatedProntuariosProntuarioIdRoute: typeof AuthenticatedProntuariosProntuarioIdRoute
+  AuthenticatedProntuariosNovoRoute: typeof AuthenticatedProntuariosNovoRoute
+}
+
+const AuthenticatedProntuariosRouteChildren: AuthenticatedProntuariosRouteChildren =
+  {
+    AuthenticatedProntuariosProntuarioIdRoute:
+      AuthenticatedProntuariosProntuarioIdRoute,
+    AuthenticatedProntuariosNovoRoute: AuthenticatedProntuariosNovoRoute,
+  }
+
+const AuthenticatedProntuariosRouteWithChildren =
+  AuthenticatedProntuariosRoute._addFileChildren(
+    AuthenticatedProntuariosRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRouteWithChildren
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRouteWithChildren
+  AuthenticatedProntuariosRoute: typeof AuthenticatedProntuariosRouteWithChildren
+  AuthenticatedValidacoesRoute: typeof AuthenticatedValidacoesRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRouteWithChildren,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRouteWithChildren,
+  AuthenticatedProntuariosRoute: AuthenticatedProntuariosRouteWithChildren,
+  AuthenticatedValidacoesRoute: AuthenticatedValidacoesRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

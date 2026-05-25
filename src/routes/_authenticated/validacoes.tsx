@@ -13,8 +13,9 @@ type Item = {
   id: string;
   data_atendimento: string;
   aluno_id: string;
-  paciente: { nome: string } | null;
-  aluno: { nome: string } | null;
+  paciente_id: string;
+  paciente_nome: string;
+  aluno_nome: string;
 };
 
 function ValidacoesPage() {
@@ -22,39 +23,47 @@ function ValidacoesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("prontuarios")
-      .select("id, data_atendimento, aluno_id, paciente:pacientes(nome), aluno:profiles!prontuarios_aluno_id_fkey(nome)")
-      .eq("status", "aguardando_validacao")
-      .order("data_atendimento", { ascending: true })
-      .then(({ data, error }) => {
-        if (error) {
-          // fallback without explicit FK name
-          supabase
-            .from("prontuarios")
-            .select("id, data_atendimento, aluno_id, paciente:pacientes(nome)")
-            .eq("status", "aguardando_validacao")
-            .order("data_atendimento", { ascending: true })
-            .then(async ({ data: d2 }) => {
-              const rows = (d2 as any[] | null) ?? [];
-              const ids = Array.from(new Set(rows.map((r) => r.aluno_id)));
-              const { data: profs } = await supabase
-                .from("profiles")
-                .select("id, nome")
-                .in("id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
-              const map = new Map((profs ?? []).map((p: any) => [p.id, p.nome]));
-              setItems(
-                rows.map((r) => ({ ...r, aluno: { nome: map.get(r.aluno_id) ?? "—" } })) as Item[]
-              );
-              setLoading(false);
-            });
-          return;
-        }
-        setItems((data as Item[] | null) ?? []);
-        setLoading(false);
-      })
-      .then(undefined, () => toast.error("Erro ao carregar"));
+    load();
   }, []);
+
+  const load = async () => {
+    setLoading(true);
+    const { data: pront, error } = await supabase
+      .from("prontuarios")
+      .select("id, data_atendimento, aluno_id, paciente_id")
+      .eq("status", "aguardando_validacao")
+      .order("data_atendimento", { ascending: true });
+
+    if (error) {
+      toast.error("Erro ao carregar");
+      setLoading(false);
+      return;
+    }
+
+    const rows = pront ?? [];
+    const pacIds = Array.from(new Set(rows.map((r) => r.paciente_id)));
+    const aluIds = Array.from(new Set(rows.map((r) => r.aluno_id)));
+
+    const [{ data: pacs }, { data: alus }] = await Promise.all([
+      supabase.from("pacientes").select("id, nome").in("id", pacIds.length ? pacIds : ["00000000-0000-0000-0000-000000000000"]),
+      supabase.from("profiles").select("id, nome").in("id", aluIds.length ? aluIds : ["00000000-0000-0000-0000-000000000000"]),
+    ]);
+
+    const pacMap = new Map((pacs ?? []).map((p) => [p.id, p.nome]));
+    const aluMap = new Map((alus ?? []).map((p) => [p.id, p.nome]));
+
+    setItems(
+      rows.map((r) => ({
+        id: r.id,
+        data_atendimento: r.data_atendimento,
+        aluno_id: r.aluno_id,
+        paciente_id: r.paciente_id,
+        paciente_nome: pacMap.get(r.paciente_id) ?? "Paciente removido",
+        aluno_nome: aluMap.get(r.aluno_id) ?? "—",
+      }))
+    );
+    setLoading(false);
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -81,9 +90,9 @@ function ValidacoesPage() {
               params={{ prontuarioId: p.id }}
               className="block p-4 rounded-md border bg-card hover:bg-accent/50 transition-colors"
             >
-              <div className="font-medium">{p.paciente?.nome ?? "Paciente removido"}</div>
+              <div className="font-medium">{p.paciente_nome}</div>
               <div className="text-xs text-muted-foreground">
-                Aluno: {p.aluno?.nome ?? "—"} · {new Date(p.data_atendimento).toLocaleString("pt-BR")}
+                Aluno: {p.aluno_nome} · {new Date(p.data_atendimento).toLocaleString("pt-BR")}
               </div>
             </Link>
           ))}
