@@ -124,6 +124,69 @@ export type Database = {
         }
         Relationships: []
       }
+      prontuarios: {
+        Row: {
+          agendamento_id: string | null
+          aluno_id: string
+          anamnese: string | null
+          created_at: string
+          data_atendimento: string
+          diagnostico: string | null
+          exame_clinico: string | null
+          id: string
+          motivo_rejeicao: string | null
+          observacoes: string | null
+          paciente_id: string
+          prescricoes: string | null
+          procedimentos_realizados: string | null
+          queixa_principal: string | null
+          status: Database["public"]["Enums"]["prontuario_status"]
+          updated_at: string
+          validado_em: string | null
+          validado_por: string | null
+        }
+        Insert: {
+          agendamento_id?: string | null
+          aluno_id: string
+          anamnese?: string | null
+          created_at?: string
+          data_atendimento?: string
+          diagnostico?: string | null
+          exame_clinico?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          paciente_id: string
+          prescricoes?: string | null
+          procedimentos_realizados?: string | null
+          queixa_principal?: string | null
+          status?: Database["public"]["Enums"]["prontuario_status"]
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+        }
+        Update: {
+          agendamento_id?: string | null
+          aluno_id?: string
+          anamnese?: string | null
+          created_at?: string
+          data_atendimento?: string
+          diagnostico?: string | null
+          exame_clinico?: string | null
+          id?: string
+          motivo_rejeicao?: string | null
+          observacoes?: string | null
+          paciente_id?: string
+          prescricoes?: string | null
+          procedimentos_realizados?: string | null
+          queixa_principal?: string | null
+          status?: Database["public"]["Enums"]["prontuario_status"]
+          updated_at?: string
+          validado_em?: string | null
+          validado_por?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -161,6 +224,11 @@ export type Database = {
     Enums: {
       agendamento_status: "agendado" | "realizado" | "cancelado" | "faltou"
       app_role: "aluno" | "professor_admin"
+      prontuario_status:
+        | "rascunho"
+        | "aguardando_validacao"
+        | "validado"
+        | "rejeitado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -290,6 +358,12 @@ export const Constants = {
     Enums: {
       agendamento_status: ["agendado", "realizado", "cancelado", "faltou"],
       app_role: ["aluno", "professor_admin"],
+      prontuario_status: [
+        "rascunho",
+        "aguardando_validacao",
+        "validado",
+        "rejeitado",
+      ],
     },
   },
 } as const
