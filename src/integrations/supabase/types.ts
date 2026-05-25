@@ -202,6 +202,7 @@ export type Database = {
           anamnese: string | null
           created_at: string
           data_atendimento: string
+          dentes_marcados: Json
           diagnostico: string | null
           exame_clinico: string | null
           id: string
@@ -222,6 +223,7 @@ export type Database = {
           anamnese?: string | null
           created_at?: string
           data_atendimento?: string
+          dentes_marcados?: Json
           diagnostico?: string | null
           exame_clinico?: string | null
           id?: string
@@ -242,6 +244,7 @@ export type Database = {
           anamnese?: string | null
           created_at?: string
           data_atendimento?: string
+          dentes_marcados?: Json
           diagnostico?: string | null
           exame_clinico?: string | null
           id?: string
