@@ -12,7 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
+import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
+import { Route as AuthenticatedPacientesNovoRouteImport } from './routes/_authenticated/pacientes.novo'
+import { Route as AuthenticatedPacientesPacienteIdRouteImport } from './routes/_authenticated/pacientes.$pacienteId'
+import { Route as AuthenticatedAgendaNovoRouteImport } from './routes/_authenticated/agenda.novo'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -28,35 +33,103 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
+  id: '/pacientes',
+  path: '/pacientes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
   id: '/inicio',
   path: '/inicio',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPacientesNovoRoute =
+  AuthenticatedPacientesNovoRouteImport.update({
+    id: '/novo',
+    path: '/novo',
+    getParentRoute: () => AuthenticatedPacientesRoute,
+  } as any)
+const AuthenticatedPacientesPacienteIdRoute =
+  AuthenticatedPacientesPacienteIdRouteImport.update({
+    id: '/$pacienteId',
+    path: '/$pacienteId',
+    getParentRoute: () => AuthenticatedPacientesRoute,
+  } as any)
+const AuthenticatedAgendaNovoRoute = AuthenticatedAgendaNovoRouteImport.update({
+  id: '/novo',
+  path: '/novo',
+  getParentRoute: () => AuthenticatedAgendaRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
+  '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
+  '/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
+  '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
+  '/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
+  '/_authenticated/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/pacientes': typeof AuthenticatedPacientesRouteWithChildren
+  '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
+  '/_authenticated/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
+  '/_authenticated/pacientes/novo': typeof AuthenticatedPacientesNovoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/inicio'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/agenda'
+    | '/inicio'
+    | '/pacientes'
+    | '/agenda/novo'
+    | '/pacientes/$pacienteId'
+    | '/pacientes/novo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/inicio'
-  id: '__root__' | '/' | '/_authenticated' | '/login' | '/_authenticated/inicio'
+  to:
+    | '/'
+    | '/login'
+    | '/agenda'
+    | '/inicio'
+    | '/pacientes'
+    | '/agenda/novo'
+    | '/pacientes/$pacienteId'
+    | '/pacientes/novo'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/login'
+    | '/_authenticated/agenda'
+    | '/_authenticated/inicio'
+    | '/_authenticated/pacientes'
+    | '/_authenticated/agenda/novo'
+    | '/_authenticated/pacientes/$pacienteId'
+    | '/_authenticated/pacientes/novo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/pacientes': {
+      id: '/_authenticated/pacientes'
+      path: '/pacientes'
+      fullPath: '/pacientes'
+      preLoaderRoute: typeof AuthenticatedPacientesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/inicio': {
       id: '/_authenticated/inicio'
       path: '/inicio'
@@ -95,15 +175,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInicioRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/agenda': {
+      id: '/_authenticated/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AuthenticatedAgendaRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pacientes/novo': {
+      id: '/_authenticated/pacientes/novo'
+      path: '/novo'
+      fullPath: '/pacientes/novo'
+      preLoaderRoute: typeof AuthenticatedPacientesNovoRouteImport
+      parentRoute: typeof AuthenticatedPacientesRoute
+    }
+    '/_authenticated/pacientes/$pacienteId': {
+      id: '/_authenticated/pacientes/$pacienteId'
+      path: '/$pacienteId'
+      fullPath: '/pacientes/$pacienteId'
+      preLoaderRoute: typeof AuthenticatedPacientesPacienteIdRouteImport
+      parentRoute: typeof AuthenticatedPacientesRoute
+    }
+    '/_authenticated/agenda/novo': {
+      id: '/_authenticated/agenda/novo'
+      path: '/novo'
+      fullPath: '/agenda/novo'
+      preLoaderRoute: typeof AuthenticatedAgendaNovoRouteImport
+      parentRoute: typeof AuthenticatedAgendaRoute
+    }
   }
 }
 
+interface AuthenticatedAgendaRouteChildren {
+  AuthenticatedAgendaNovoRoute: typeof AuthenticatedAgendaNovoRoute
+}
+
+const AuthenticatedAgendaRouteChildren: AuthenticatedAgendaRouteChildren = {
+  AuthenticatedAgendaNovoRoute: AuthenticatedAgendaNovoRoute,
+}
+
+const AuthenticatedAgendaRouteWithChildren =
+  AuthenticatedAgendaRoute._addFileChildren(AuthenticatedAgendaRouteChildren)
+
+interface AuthenticatedPacientesRouteChildren {
+  AuthenticatedPacientesPacienteIdRoute: typeof AuthenticatedPacientesPacienteIdRoute
+  AuthenticatedPacientesNovoRoute: typeof AuthenticatedPacientesNovoRoute
+}
+
+const AuthenticatedPacientesRouteChildren: AuthenticatedPacientesRouteChildren =
+  {
+    AuthenticatedPacientesPacienteIdRoute:
+      AuthenticatedPacientesPacienteIdRoute,
+    AuthenticatedPacientesNovoRoute: AuthenticatedPacientesNovoRoute,
+  }
+
+const AuthenticatedPacientesRouteWithChildren =
+  AuthenticatedPacientesRoute._addFileChildren(
+    AuthenticatedPacientesRouteChildren,
+  )
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRouteWithChildren
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAgendaRoute: AuthenticatedAgendaRouteWithChildren,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedPacientesRoute: AuthenticatedPacientesRouteWithChildren,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -118,3 +258,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
