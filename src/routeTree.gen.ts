@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedValidacoesRouteImport } from './routes/_authenticated/validacoes'
+import { Route as AuthenticatedUsuariosRouteImport } from './routes/_authenticated/usuarios'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as AuthenticatedProntuariosRouteImport } from './routes/_authenticated/prontuarios'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedValidacoesRoute = AuthenticatedValidacoesRouteImport.update({
   id: '/validacoes',
   path: '/validacoes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedUsuariosRoute = AuthenticatedUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/usuarios': typeof AuthenticatedUsuariosRoute
   '/validacoes': typeof AuthenticatedValidacoesRoute
   '/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/_authenticated/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/_authenticated/usuarios': typeof AuthenticatedUsuariosRoute
   '/_authenticated/validacoes': typeof AuthenticatedValidacoesRoute
   '/_authenticated/agenda/novo': typeof AuthenticatedAgendaNovoRoute
   '/_authenticated/pacientes/$pacienteId': typeof AuthenticatedPacientesPacienteIdRoute
@@ -166,6 +175,7 @@ export interface FileRouteTypes {
     | '/pacientes'
     | '/prontuarios'
     | '/relatorios'
+    | '/usuarios'
     | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/pacientes'
     | '/prontuarios'
     | '/relatorios'
+    | '/usuarios'
     | '/validacoes'
     | '/agenda/novo'
     | '/pacientes/$pacienteId'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pacientes'
     | '/_authenticated/prontuarios'
     | '/_authenticated/relatorios'
+    | '/_authenticated/usuarios'
     | '/_authenticated/validacoes'
     | '/_authenticated/agenda/novo'
     | '/_authenticated/pacientes/$pacienteId'
@@ -241,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/validacoes'
       fullPath: '/validacoes'
       preLoaderRoute: typeof AuthenticatedValidacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/usuarios': {
+      id: '/_authenticated/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof AuthenticatedUsuariosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/relatorios': {
@@ -375,6 +394,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRouteWithChildren
   AuthenticatedProntuariosRoute: typeof AuthenticatedProntuariosRouteWithChildren
   AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
+  AuthenticatedUsuariosRoute: typeof AuthenticatedUsuariosRoute
   AuthenticatedValidacoesRoute: typeof AuthenticatedValidacoesRoute
 }
 
@@ -385,6 +405,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPacientesRoute: AuthenticatedPacientesRouteWithChildren,
   AuthenticatedProntuariosRoute: AuthenticatedProntuariosRouteWithChildren,
   AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
+  AuthenticatedUsuariosRoute: AuthenticatedUsuariosRoute,
   AuthenticatedValidacoesRoute: AuthenticatedValidacoesRoute,
 }
 
