@@ -36,7 +36,7 @@ function ForgotPasswordPage() {
     <div
       className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
       style={{
-        backgroundColor: "#e6ecef",
+        backgroundColor: "#cfcac4",
         backgroundImage: "url(/dentista-bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
