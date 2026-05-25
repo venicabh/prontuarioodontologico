@@ -27,11 +27,11 @@ const signupSchema = loginSchema.extend({
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, isPasswordRecovery } = useAuth();
   const [loading, setLoading] = useState(false);
 
   // Redirect if already logged in
-  if (session) {
+  if (session && !isPasswordRecovery) {
     navigate({ to: "/inicio" });
   }
 

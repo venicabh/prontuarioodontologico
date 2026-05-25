@@ -22,12 +22,13 @@ const NAV: NavItem[] = [
 ];
 
 function AuthLayout() {
-  const { session, role, loading, signOut } = useAuth();
+  const { session, role, loading, isPasswordRecovery, signOut } = useAuth();
   const navigate = useNavigate();
 
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center text-muted-foreground">Carregando...</div>;
   }
+  if (isPasswordRecovery) return <Navigate to="/" />;
   if (!session) return <Navigate to="/login" />;
 
   const items = NAV.filter((i) => role && i.roles.includes(role));
