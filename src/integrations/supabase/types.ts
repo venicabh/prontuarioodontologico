@@ -61,6 +61,77 @@ export type Database = {
           },
         ]
       }
+      materiais: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          estoque_minimo: number
+          id: string
+          nome: string
+          quantidade: number
+          unidade: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          estoque_minimo?: number
+          id?: string
+          nome: string
+          quantidade?: number
+          unidade?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          estoque_minimo?: number
+          id?: string
+          nome?: string
+          quantidade?: number
+          unidade?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      movimentacoes_estoque: {
+        Row: {
+          created_at: string
+          id: string
+          material_id: string
+          motivo: string | null
+          quantidade: number
+          tipo: Database["public"]["Enums"]["movimentacao_tipo"]
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          material_id: string
+          motivo?: string | null
+          quantidade: number
+          tipo: Database["public"]["Enums"]["movimentacao_tipo"]
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          material_id?: string
+          motivo?: string | null
+          quantidade?: number
+          tipo?: Database["public"]["Enums"]["movimentacao_tipo"]
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_estoque_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pacientes: {
         Row: {
           cpf: string
@@ -224,6 +295,7 @@ export type Database = {
     Enums: {
       agendamento_status: "agendado" | "realizado" | "cancelado" | "faltou"
       app_role: "aluno" | "professor_admin"
+      movimentacao_tipo: "entrada" | "saida" | "ajuste"
       prontuario_status:
         | "rascunho"
         | "aguardando_validacao"
@@ -358,6 +430,7 @@ export const Constants = {
     Enums: {
       agendamento_status: ["agendado", "realizado", "cancelado", "faltou"],
       app_role: ["aluno", "professor_admin"],
+      movimentacao_tipo: ["entrada", "saida", "ajuste"],
       prontuario_status: [
         "rascunho",
         "aguardando_validacao",
