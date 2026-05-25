@@ -3,11 +3,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -15,10 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Odontograma, type DentesMarcados } from "@/components/Odontograma";
 import { toast } from "sonner";
 import { z } from "zod";
+import { User, AlertTriangle } from "lucide-react";
 
-type Paciente = { id: string; nome: string };
+type Paciente = {
+  id: string;
+  nome: string;
+  cpf?: string | null;
+  data_nascimento?: string | null;
+  observacoes?: string | null;
+};
 
 export type ProntuarioStatus = "rascunho" | "aguardando_validacao" | "validado" | "rejeitado";
 
@@ -37,17 +45,12 @@ export type ProntuarioData = {
   observacoes: string | null;
   status: ProntuarioStatus;
   motivo_rejeicao?: string | null;
+  dentes_marcados?: DentesMarcados | null;
 };
 
 const schema = z.object({
   paciente_id: z.string().uuid("Selecione um paciente"),
   queixa_principal: z.string().min(1, "Informe a queixa principal").max(2000),
-  anamnese: z.string().max(5000).optional(),
-  exame_clinico: z.string().max(5000).optional(),
-  diagnostico: z.string().max(2000).optional(),
-  procedimentos_realizados: z.string().max(5000).optional(),
-  prescricoes: z.string().max(2000).optional(),
-  observacoes: z.string().max(2000).optional(),
 });
 
 type Props = {
@@ -72,6 +75,13 @@ const statusVariant: Record<ProntuarioStatus, "default" | "secondary" | "destruc
   rejeitado: "destructive",
 };
 
+function calcIdade(dob?: string | null) {
+  if (!dob) return null;
+  const d = new Date(dob);
+  const diff = Date.now() - d.getTime();
+  return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
+}
+
 export function ProntuarioForm({
   initial,
   prontuarioId,
@@ -94,6 +104,9 @@ export function ProntuarioForm({
     prescricoes: initial?.prescricoes ?? "",
     observacoes: initial?.observacoes ?? "",
   });
+  const [dentes, setDentes] = useState<DentesMarcados>(
+    (initial?.dentes_marcados as DentesMarcados) ?? {},
+  );
 
   const status: ProntuarioStatus = initial?.status ?? "rascunho";
   const isOwner = !initial || initial.aluno_id === user?.id;
@@ -104,10 +117,13 @@ export function ProntuarioForm({
   useEffect(() => {
     supabase
       .from("pacientes")
-      .select("id, nome")
+      .select("id, nome, cpf, data_nascimento, observacoes")
       .order("nome")
       .then(({ data }) => setPacientes((data as Paciente[] | null) ?? []));
   }, []);
+
+  const paciente = pacientes.find((p) => p.id === form.paciente_id);
+  const idade = calcIdade(paciente?.data_nascimento);
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -131,6 +147,7 @@ export function ProntuarioForm({
       procedimentos_realizados: form.procedimentos_realizados || null,
       prescricoes: form.prescricoes || null,
       observacoes: form.observacoes || null,
+      dentes_marcados: dentes,
       status: newStatus,
       ...(newStatus === "rascunho" && status === "rejeitado" ? { motivo_rejeicao: null } : {}),
     };
@@ -189,130 +206,181 @@ export function ProntuarioForm({
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center shrink-0">
+              <User className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <div className="flex-1 min-w-[220px]">
+              {canEdit && !defaultPacienteId && !initial ? (
+                <Select value={form.paciente_id} onValueChange={set("paciente_id")}>
+                  <SelectTrigger className="text-lg font-semibold h-auto border-0 p-0 shadow-none focus:ring-0">
+                    <SelectValue placeholder="Selecione o paciente" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {pacientes.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <h2 className="text-2xl font-bold">{paciente?.nome ?? "—"}</h2>
+              )}
+              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-muted-foreground">
+                {idade != null && <span>{idade} anos</span>}
+                {paciente?.data_nascimento && (
+                  <span>{new Date(paciente.data_nascimento).toLocaleDateString("pt-BR")}</span>
+                )}
+                {paciente?.cpf && <span>CPF: {paciente.cpf}</span>}
+              </div>
+            </div>
+            <Badge variant={statusVariant[status]}>{statusLabel[status]}</Badge>
+          </div>
+
+          {paciente?.observacoes && (
+            <div className="flex items-start gap-2 mt-4 p-3 rounded-md bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 text-sm">
+              <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+              <span className="text-amber-900 dark:text-amber-200">{paciente.observacoes}</span>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {initial?.status === "rejeitado" && initial.motivo_rejeicao && (
         <Card className="border-destructive/50">
-          <CardHeader>
-            <CardTitle className="text-base text-destructive">Rejeitado</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">{initial.motivo_rejeicao}</CardContent>
+          <CardContent className="pt-6">
+            <p className="text-sm font-semibold text-destructive mb-1">Rejeitado</p>
+            <p className="text-sm">{initial.motivo_rejeicao}</p>
+          </CardContent>
         </Card>
       )}
 
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Status:</span>
-        <Badge variant={statusVariant[status]}>{statusLabel[status]}</Badge>
-      </div>
+      {/* Tabs */}
+      <Tabs defaultValue="resumo" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="resumo">Resumo</TabsTrigger>
+          <TabsTrigger value="evolucao">Evolução</TabsTrigger>
+          <TabsTrigger value="prescricoes">Prescrições</TabsTrigger>
+          <TabsTrigger value="dados">Dados</TabsTrigger>
+        </TabsList>
 
-      <Card>
-        <CardContent className="pt-6 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="paciente">Paciente *</Label>
-            <Select
-              value={form.paciente_id}
-              onValueChange={set("paciente_id")}
-              disabled={!canEdit || !!defaultPacienteId}
-            >
-              <SelectTrigger id="paciente">
-                <SelectValue placeholder="Selecione o paciente" />
-              </SelectTrigger>
-              <SelectContent>
-                {pacientes.map((p) => (
-                  <SelectItem key={p.id} value={p.id}>
-                    {p.nome}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        <TabsContent value="resumo" className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardContent className="pt-6 space-y-2">
+                <Label htmlFor="queixa">Queixa principal *</Label>
+                <Textarea
+                  id="queixa"
+                  value={form.queixa_principal}
+                  onChange={(e) => set("queixa_principal")(e.target.value)}
+                  rows={3}
+                  disabled={!canEdit}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6 space-y-2">
+                <Label htmlFor="diag">Diagnóstico</Label>
+                <Textarea
+                  id="diag"
+                  value={form.diagnostico}
+                  onChange={(e) => set("diagnostico")(e.target.value)}
+                  rows={3}
+                  disabled={!canEdit}
+                />
+              </CardContent>
+            </Card>
           </div>
 
-          {initial?.data_atendimento && (
-            <div className="space-y-2">
-              <Label>Data do atendimento</Label>
-              <Input
-                value={new Date(initial.data_atendimento).toLocaleString("pt-BR")}
-                disabled
+          {/* Odontograma */}
+          <Card>
+            <CardContent className="pt-6 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">Odontograma</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Clique em um dente para marcar o procedimento
+                  </p>
+                </div>
+              </div>
+              <Odontograma value={dentes} onChange={setDentes} disabled={!canEdit} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="evolucao" className="space-y-4">
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <Label htmlFor="anamnese">Anamnese</Label>
+              <Textarea
+                id="anamnese"
+                value={form.anamnese}
+                onChange={(e) => set("anamnese")(e.target.value)}
+                rows={4}
+                disabled={!canEdit}
               />
-            </div>
-          )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <Label htmlFor="exame">Exame clínico</Label>
+              <Textarea
+                id="exame"
+                value={form.exame_clinico}
+                onChange={(e) => set("exame_clinico")(e.target.value)}
+                rows={4}
+                disabled={!canEdit}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <Label htmlFor="proc">Procedimentos realizados</Label>
+              <Textarea
+                id="proc"
+                value={form.procedimentos_realizados}
+                onChange={(e) => set("procedimentos_realizados")(e.target.value)}
+                rows={4}
+                disabled={!canEdit}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <div className="space-y-2">
-            <Label htmlFor="queixa">Queixa principal *</Label>
-            <Textarea
-              id="queixa"
-              value={form.queixa_principal}
-              onChange={(e) => set("queixa_principal")(e.target.value)}
-              rows={2}
-              disabled={!canEdit}
-            />
-          </div>
+        <TabsContent value="prescricoes" className="space-y-4">
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <Label htmlFor="presc">Prescrições</Label>
+              <Textarea
+                id="presc"
+                value={form.prescricoes}
+                onChange={(e) => set("prescricoes")(e.target.value)}
+                rows={6}
+                disabled={!canEdit}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <div className="space-y-2">
-            <Label htmlFor="anamnese">Anamnese</Label>
-            <Textarea
-              id="anamnese"
-              value={form.anamnese}
-              onChange={(e) => set("anamnese")(e.target.value)}
-              rows={3}
-              disabled={!canEdit}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="exame">Exame clínico</Label>
-            <Textarea
-              id="exame"
-              value={form.exame_clinico}
-              onChange={(e) => set("exame_clinico")(e.target.value)}
-              rows={3}
-              disabled={!canEdit}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="diag">Diagnóstico</Label>
-            <Textarea
-              id="diag"
-              value={form.diagnostico}
-              onChange={(e) => set("diagnostico")(e.target.value)}
-              rows={2}
-              disabled={!canEdit}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="proc">Procedimentos realizados</Label>
-            <Textarea
-              id="proc"
-              value={form.procedimentos_realizados}
-              onChange={(e) => set("procedimentos_realizados")(e.target.value)}
-              rows={3}
-              disabled={!canEdit}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="presc">Prescrições</Label>
-            <Textarea
-              id="presc"
-              value={form.prescricoes}
-              onChange={(e) => set("prescricoes")(e.target.value)}
-              rows={2}
-              disabled={!canEdit}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="obs">Observações</Label>
-            <Textarea
-              id="obs"
-              value={form.observacoes}
-              onChange={(e) => set("observacoes")(e.target.value)}
-              rows={2}
-              disabled={!canEdit}
-            />
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="dados" className="space-y-4">
+          <Card>
+            <CardContent className="pt-6 space-y-2">
+              <Label htmlFor="obs">Observações</Label>
+              <Textarea
+                id="obs"
+                value={form.observacoes}
+                onChange={(e) => set("observacoes")(e.target.value)}
+                rows={4}
+                disabled={!canEdit}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       <div className="flex flex-wrap gap-2 justify-end">
         <Button variant="outline" onClick={() => navigate({ to: "/prontuarios" })} disabled={saving}>

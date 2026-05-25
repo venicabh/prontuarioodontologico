@@ -1,0 +1,1 @@
+ALTER TABLE public.prontuarios ADD COLUMN IF NOT EXISTS dentes_marcados jsonb NOT NULL DEFAULT '{}'::jsonb;
