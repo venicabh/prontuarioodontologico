@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_authenticated")({
 type NavItem = { to: string; label: string; icon: typeof Home; roles: AppRole[] };
 
 const NAV: NavItem[] = [
-  { to: "/inicio", label: "Início", icon: Home, roles: ["aluno", "professor_admin"] },
+  { to: "/inicio", label: "Meu Painel", icon: Home, roles: ["aluno", "professor_admin"] },
   { to: "/agenda", label: "Agenda", icon: Calendar, roles: ["aluno", "professor_admin"] },
   { to: "/pacientes", label: "Pacientes", icon: Users, roles: ["aluno", "professor_admin"] },
   { to: "/prontuarios", label: "Prontuários", icon: ClipboardList, roles: ["aluno", "professor_admin"] },
