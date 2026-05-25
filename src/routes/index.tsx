@@ -1,5 +1,5 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useAuth } from "@/hooks/use-auth";
+import { hasPasswordRecoverySession, isPasswordRecoveryUrl, useAuth } from "@/hooks/use-auth";
 import { ResetPasswordForm } from "@/components/ResetPasswordForm";
 
 export const Route = createFileRoute("/")({
@@ -7,15 +7,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { session, loading } = useAuth();
+  const { session, loading, isPasswordRecovery } = useAuth();
 
-  // Se chegou um link de recuperação de senha na raiz, redireciona preservando o hash
-  if (
-    typeof window !== "undefined" &&
-    (window.location.hash.includes("type=recovery") ||
-      window.location.search.includes("type=recovery") ||
-      window.location.search.includes("reset-password=1"))
-  ) {
+  // Se chegou um link de recuperação, mostra a troca de senha e não entra no sistema.
+  if (isPasswordRecovery || isPasswordRecoveryUrl() || hasPasswordRecoverySession()) {
     return <ResetPasswordForm />;
   }
 
