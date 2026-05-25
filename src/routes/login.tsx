@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { OdontoSymbol } from "@/components/OdontoSymbol";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -92,9 +93,21 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-md">
+    <div
+      className="flex min-h-screen items-center justify-center px-4 relative overflow-hidden"
+      style={{
+        backgroundImage: "url(/dentista-bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Overlay escuro para legibilidade */}
+      <div className="absolute inset-0 bg-black/50" />
+      <Card className="w-full max-w-md relative z-10">
         <CardHeader className="text-center">
+          <div className="mx-auto mb-3 p-3 rounded-full bg-primary/10 w-fit">
+            <OdontoSymbol className="h-8 w-8 text-primary" />
+          </div>
           <CardTitle className="text-2xl">Prontuário Odontológico Digital</CardTitle>
           <CardDescription>Acesse o sistema com suas credenciais</CardDescription>
         </CardHeader>
