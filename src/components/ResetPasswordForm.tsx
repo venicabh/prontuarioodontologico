@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { clearPasswordRecoverySession, hasPasswordRecoverySession, isPasswordRecoveryUrl } from "@/hooks/use-auth";
+import { OdontoSymbol } from "@/components/OdontoSymbol";
 
 export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
@@ -44,9 +45,20 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      <Card className="w-full max-w-md">
+    <div
+      className="flex min-h-screen items-center justify-center px-4 relative overflow-hidden"
+      style={{
+        backgroundImage: "url(/dentista-bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50" />
+      <Card className="w-full max-w-md relative z-10">
         <CardHeader className="text-center">
+          <div className="mx-auto mb-3 p-3 rounded-full bg-primary/10 w-fit">
+            <OdontoSymbol className="h-8 w-8 text-primary" />
+          </div>
           <CardTitle className="text-2xl">Redefinir senha</CardTitle>
           <CardDescription>
             {ready ? "Crie uma nova senha para sua conta" : "Validando link..."}
