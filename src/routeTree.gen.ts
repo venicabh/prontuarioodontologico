@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedValidacoesRouteImport } from './routes/_authenticated/validacoes'
 import { Route as AuthenticatedProntuariosRouteImport } from './routes/_authenticated/prontuarios'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated/pacientes'
+import { Route as AuthenticatedMateriaisRouteImport } from './routes/_authenticated/materiais'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 import { Route as AuthenticatedProntuariosNovoRouteImport } from './routes/_authenticated/prontuarios.novo'
@@ -51,6 +52,11 @@ const AuthenticatedProntuariosRoute =
 const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMateriaisRoute = AuthenticatedMateriaisRouteImport.update({
+  id: '/materiais',
+  path: '/materiais',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/materiais': typeof AuthenticatedMateriaisRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/validacoes': typeof AuthenticatedValidacoesRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/inicio': typeof AuthenticatedInicioRoute
+  '/materiais': typeof AuthenticatedMateriaisRoute
   '/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/validacoes': typeof AuthenticatedValidacoesRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_authenticated/agenda': typeof AuthenticatedAgendaRouteWithChildren
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/materiais': typeof AuthenticatedMateriaisRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRouteWithChildren
   '/_authenticated/prontuarios': typeof AuthenticatedProntuariosRouteWithChildren
   '/_authenticated/validacoes': typeof AuthenticatedValidacoesRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/agenda'
     | '/inicio'
+    | '/materiais'
     | '/pacientes'
     | '/prontuarios'
     | '/validacoes'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/agenda'
     | '/inicio'
+    | '/materiais'
     | '/pacientes'
     | '/prontuarios'
     | '/validacoes'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_authenticated/agenda'
     | '/_authenticated/inicio'
+    | '/_authenticated/materiais'
     | '/_authenticated/pacientes'
     | '/_authenticated/prontuarios'
     | '/_authenticated/validacoes'
@@ -231,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: '/pacientes'
       fullPath: '/pacientes'
       preLoaderRoute: typeof AuthenticatedPacientesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/materiais': {
+      id: '/_authenticated/materiais'
+      path: '/materiais'
+      fullPath: '/materiais'
+      preLoaderRoute: typeof AuthenticatedMateriaisRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/inicio': {
@@ -333,6 +352,7 @@ const AuthenticatedProntuariosRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRouteWithChildren
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedMateriaisRoute: typeof AuthenticatedMateriaisRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRouteWithChildren
   AuthenticatedProntuariosRoute: typeof AuthenticatedProntuariosRouteWithChildren
   AuthenticatedValidacoesRoute: typeof AuthenticatedValidacoesRoute
@@ -341,6 +361,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAgendaRoute: AuthenticatedAgendaRouteWithChildren,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedMateriaisRoute: AuthenticatedMateriaisRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRouteWithChildren,
   AuthenticatedProntuariosRoute: AuthenticatedProntuariosRouteWithChildren,
   AuthenticatedValidacoesRoute: AuthenticatedValidacoesRoute,
@@ -358,3 +379,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
