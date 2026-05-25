@@ -17,6 +17,8 @@ export type PacienteFormValues = {
   telefone: string;
   email: string;
   endereco: string;
+  alergias: string;
+  doencas_preexistentes: string;
   observacoes: string;
 };
 
@@ -27,6 +29,8 @@ const schema = z.object({
   telefone: z.string().max(30).optional(),
   email: z.string().email("E-mail inválido").max(255).optional().or(z.literal("")),
   endereco: z.string().max(500).optional(),
+  alergias: z.string().max(1000).optional(),
+  doencas_preexistentes: z.string().max(1000).optional(),
   observacoes: z.string().max(2000).optional(),
 });
 
@@ -37,6 +41,8 @@ const EMPTY: PacienteFormValues = {
   telefone: "",
   email: "",
   endereco: "",
+  alergias: "",
+  doencas_preexistentes: "",
   observacoes: "",
 };
 
