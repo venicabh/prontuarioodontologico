@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -36,6 +36,7 @@ const statusVariant: Record<Prontuario["status"], "default" | "secondary" | "des
 };
 
 function ProntuariosPage() {
+  const location = useLocation();
   const { user, role } = useAuth();
   const [items, setItems] = useState<Prontuario[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,10 @@ function ProntuariosPage() {
   const filtered = items.filter((p) =>
     !search ? true : p.paciente?.nome.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (location.pathname !== "/prontuarios") {
+    return <Outlet />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
@@ -30,6 +30,7 @@ const statusVariant: Record<Agendamento["status"], "default" | "secondary" | "de
 };
 
 function AgendaPage() {
+  const location = useLocation();
   const { user, role } = useAuth();
   const [items, setItems] = useState<Agendamento[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +78,10 @@ function AgendaPage() {
     (acc[key] ??= []).push(a);
     return acc;
   }, {});
+
+  if (location.pathname !== "/agenda") {
+    return <Outlet />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
