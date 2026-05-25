@@ -64,6 +64,10 @@ function summarizeDentes(dentes: DentesMarcados | null | undefined) {
 export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
   const [prontuarios, setProntuarios] = useState<ProntuarioRow[]>([]);
   const [agendamentos, setAgendamentos] = useState<AgendamentoRow[]>([]);
+  const [paciente, setPaciente] = useState<{
+    alergias: string | null;
+    doencas_preexistentes: string | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -86,10 +90,18 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
         .neq("status", "cancelado")
         .order("data_hora", { ascending: true })
         .limit(5),
-    ]).then(([p, a]) => {
+      supabase
+        .from("pacientes")
+        .select("alergias, doencas_preexistentes")
+        .eq("id", pacienteId)
+        .maybeSingle(),
+    ]).then(([p, a, pac]) => {
       if (cancelled) return;
       setProntuarios((p.data as ProntuarioRow[] | null) ?? []);
       setAgendamentos((a.data as AgendamentoRow[] | null) ?? []);
+      setPaciente(
+        (pac.data as { alergias: string | null; doencas_preexistentes: string | null } | null) ?? null,
+      );
       setLoading(false);
     });
 
@@ -97,6 +109,7 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
       cancelled = true;
     };
   }, [pacienteId]);
+
 
   const outros = prontuarios.filter((p) => p.id !== currentProntuarioId);
   const ultimo = outros[0];
