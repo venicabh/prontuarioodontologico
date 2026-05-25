@@ -9,8 +9,18 @@ function Index() {
   const { session, loading } = useAuth();
 
   // Se chegou um link de recuperação de senha na raiz, redireciona preservando o hash
-  if (typeof window !== "undefined" && window.location.hash.includes("type=recovery")) {
-    return <Navigate to="/reset-password" hash={window.location.hash.slice(1)} />;
+  if (
+    typeof window !== "undefined" &&
+    (window.location.hash.includes("type=recovery") ||
+      window.location.search.includes("type=recovery") ||
+      window.location.search.includes("reset-password=1"))
+  ) {
+    return (
+      <Navigate
+        to="/reset-password"
+        hash={window.location.hash.slice(1)}
+      />
+    );
   }
 
   if (loading)

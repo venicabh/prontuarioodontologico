@@ -21,7 +21,9 @@ function ForgotPasswordPage() {
     if (!email) return toast.error("Informe seu e-mail");
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      // Envia para a raiz para evitar erro de rota direta no link do e-mail.
+      // O app detecta o fluxo e abre /reset-password sem recarregar a página.
+      redirectTo: `${window.location.origin}/?reset-password=1`,
     });
     setLoading(false);
     if (error) return toast.error(error.message);

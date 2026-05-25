@@ -8,14 +8,19 @@ export type AppRole = "aluno" | "professor_admin";
 const IS_RECOVERY_FLOW =
   typeof window !== "undefined" &&
   (window.location.hash.includes("type=recovery") ||
-    window.location.search.includes("type=recovery"));
+    window.location.search.includes("type=recovery") ||
+    window.location.search.includes("reset-password=1"));
 
 if (
   IS_RECOVERY_FLOW &&
   typeof window !== "undefined" &&
   window.location.pathname !== "/reset-password"
 ) {
-  window.history.replaceState(null, "", "/reset-password" + window.location.hash);
+  window.history.replaceState(
+    null,
+    "",
+    "/reset-password" + window.location.search + window.location.hash,
+  );
 }
 
 interface AuthContextValue {
