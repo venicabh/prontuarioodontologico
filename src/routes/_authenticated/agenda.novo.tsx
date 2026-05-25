@@ -96,9 +96,14 @@ function NovoAgendamentoPage() {
       <Card>
         <CardContent className="pt-6">
           {pacientes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Cadastre ao menos um paciente antes de criar agendamentos.
-            </p>
+            <div className="space-y-4 text-center py-6">
+              <p className="text-sm text-muted-foreground">
+                Você ainda não tem pacientes cadastrados. Cadastre um paciente para poder marcar consultas.
+              </p>
+              <Button onClick={() => navigate({ to: "/pacientes/novo" })}>
+                Cadastrar paciente
+              </Button>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
