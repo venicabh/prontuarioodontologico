@@ -156,6 +156,35 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
           )}
         </div>
 
+        {(paciente?.alergias || paciente?.doencas_preexistentes) && (
+          <div className="grid gap-3 sm:grid-cols-2 mb-3">
+            {paciente?.alergias && (
+              <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40 p-3">
+                <AlertOctagon className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-red-900 dark:text-red-200 uppercase tracking-wide">
+                    Alergias
+                  </p>
+                  <p className="text-sm text-red-900 dark:text-red-100">{paciente.alergias}</p>
+                </div>
+              </div>
+            )}
+            {paciente?.doencas_preexistentes && (
+              <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-900/40 p-3">
+                <HeartPulse className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
+                <div className="space-y-0.5">
+                  <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 uppercase tracking-wide">
+                    Doenças pré-existentes
+                  </p>
+                  <p className="text-sm text-amber-900 dark:text-amber-100">
+                    {paciente.doencas_preexistentes}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {/* Último Exame Dentário */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
