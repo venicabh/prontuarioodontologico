@@ -6,7 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ClipboardList, Plus } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { ClipboardList, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/prontuarios")({
@@ -38,6 +49,7 @@ const statusVariant: Record<Prontuario["status"], "default" | "secondary" | "des
 function ProntuariosPage() {
   const location = useLocation();
   const { user, role } = useAuth();
+  const isAdmin = role === "professor_admin";
   const [items, setItems] = useState<Prontuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"meus" | "todos">("meus");
@@ -60,6 +72,16 @@ function ProntuariosPage() {
     setLoading(false);
   };
 
+  const handleDelete = async (id: string, nomePaciente: string) => {
+    const { error } = await supabase.from("prontuarios").delete().eq("id", id);
+    if (error) {
+      toast.error("Erro ao excluir prontuário: " + error.message);
+      return;
+    }
+    toast.success(`Prontuário de ${nomePaciente} excluído com sucesso`);
+    setItems((prev) => prev.filter((p) => p.id !== id));
+  };
+
   const filtered = items.filter((p) =>
     !search ? true : p.paciente?.nome.toLowerCase().includes(search.toLowerCase())
   );
@@ -79,7 +101,7 @@ function ProntuariosPage() {
           <Button variant={filter === "meus" ? "default" : "outline"} size="sm" onClick={() => setFilter("meus")}>
             Meus
           </Button>
-          {role === "professor_admin" && (
+          {isAdmin && (
             <Button variant={filter === "todos" ? "default" : "outline"} size="sm" onClick={() => setFilter("todos")}>
               Todos
             </Button>
@@ -111,22 +133,50 @@ function ProntuariosPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map((p) => (
-            <Link
-              key={p.id}
-              to="/prontuarios/$prontuarioId"
-              params={{ prontuarioId: p.id }}
-              className="block"
-            >
-              <div className="flex items-center justify-between gap-3 p-4 rounded-md border bg-card hover:bg-accent/50 transition-colors">
-                <div className="min-w-0">
-                  <div className="font-medium truncate">{p.paciente?.nome ?? "Paciente removido"}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {new Date(p.data_atendimento).toLocaleString("pt-BR")}
+            <div key={p.id} className="flex items-center gap-2">
+              <Link
+                to="/prontuarios/$prontuarioId"
+                params={{ prontuarioId: p.id }}
+                className="flex-1 block"
+              >
+                <div className="flex items-center justify-between gap-3 p-4 rounded-md border bg-card hover:bg-accent/50 transition-colors">
+                  <div className="min-w-0">
+                    <div className="font-medium truncate">{p.paciente?.nome ?? "Paciente removido"}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(p.data_atendimento).toLocaleString("pt-BR")}
+                    </div>
                   </div>
+                  <Badge variant={statusVariant[p.status]}>{statusLabel[p.status]}</Badge>
                 </div>
-                <Badge variant={statusVariant[p.status]}>{statusLabel[p.status]}</Badge>
-              </div>
-            </Link>
+              </Link>
+              {isAdmin && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="sm" title="Excluir prontuário" className="text-destructive hover:text-destructive shrink-0">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Excluir prontuário</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Tem certeza que deseja excluir o prontuário de <strong>{p.paciente?.nome ?? "este paciente"}</strong>?<br /><br />
+                        ⚠️ Esta ação não pode ser desfeita.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDelete(p.id, p.paciente?.nome ?? "paciente")}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
           ))}
         </div>
       )}
