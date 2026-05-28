@@ -288,13 +288,13 @@ export function Odontograma({ value = {}, onChange, disabled }: Props) {
     <div className="space-y-4">
       <div className="rounded-lg border bg-card p-4 overflow-x-auto">
         <div className="flex flex-col items-center gap-3 min-w-fit">
-          <div className="flex items-center gap-3">
-            {row(UPPER_RIGHT)}
+          <div className="flex items-end gap-3">
+            {row(UPPER_RIGHT, true)}
             <div className="w-px h-10 bg-border" />
-            {row(UPPER_LEFT)}
+            {row(UPPER_LEFT, true)}
           </div>
           <div className="h-px w-full bg-border" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-start gap-3">
             {row(LOWER_RIGHT)}
             <div className="w-px h-10 bg-border" />
             {row(LOWER_LEFT)}
