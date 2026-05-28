@@ -53,7 +53,7 @@ export function ResetPasswordForm() {
         src="/dentista-bg.jpg"
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-contain object-right select-none"
+        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-center select-none"
       />
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-stone-300/60 bg-stone-50/95 backdrop-blur-sm">
         <CardHeader className="text-center">
