@@ -57,12 +57,19 @@ function PacientesPage() {
   };
 
   const handleDelete = async (id: string, nome: string) => {
+    // Deleta agendamentos vinculados
+    await supabase.from("agendamentos").delete().eq("paciente_id", id);
+
+    // Deleta prontuários vinculados
+    await supabase.from("prontuarios").delete().eq("paciente_id", id);
+
+    // Deleta o paciente
     const { error } = await supabase.from("pacientes").delete().eq("id", id);
     if (error) {
-      toast.error("Erro ao excluir paciente. Verifique se há prontuários ou agendamentos vinculados.");
+      toast.error("Erro ao excluir paciente: " + error.message);
       return;
     }
-    toast.success(`Paciente ${nome} excluído`);
+    toast.success(`Paciente ${nome} excluído com sucesso`);
     setPacientes((prev) => prev.filter((p) => p.id !== id));
   };
 
@@ -143,7 +150,8 @@ function PacientesPage() {
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Excluir paciente</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  Tem certeza que deseja excluir <strong>{p.nome}</strong>? Esta ação não pode ser desfeita.
+                                  Tem certeza que deseja excluir <strong>{p.nome}</strong>?<br /><br />
+                                  ⚠️ <strong>Todos os dados vinculados serão apagados permanentemente</strong>, incluindo prontuários e agendamentos. Esta ação não pode ser desfeita.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
@@ -152,7 +160,7 @@ function PacientesPage() {
                                   onClick={() => handleDelete(p.id, p.nome)}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                  Excluir
+                                  Excluir tudo
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
