@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Odontograma, type DentesMarcados } from "@/components/Odontograma";
 import { ResumoPaciente } from "@/components/ResumoPaciente";
+import { PrescricaoActions } from "@/components/PrescricaoActions";
 import { toast } from "sonner";
 import { z } from "zod";
 import { User, AlertTriangle } from "lucide-react";
@@ -27,6 +28,8 @@ type Paciente = {
   cpf?: string | null;
   data_nascimento?: string | null;
   observacoes?: string | null;
+  telefone?: string | null;
+  email?: string | null;
 };
 
 export type ProntuarioStatus = "rascunho" | "aguardando_validacao" | "validado" | "rejeitado";
@@ -118,7 +121,7 @@ export function ProntuarioForm({
   useEffect(() => {
     supabase
       .from("pacientes")
-      .select("id, nome, cpf, data_nascimento, observacoes")
+      .select("id, nome, cpf, data_nascimento, observacoes, telefone, email")
       .order("nome")
       .then(({ data }) => setPacientes((data as Paciente[] | null) ?? []));
   }, []);
@@ -358,18 +361,31 @@ export function ProntuarioForm({
 
         <TabsContent value="prescricoes" className="space-y-4">
           <Card>
-            <CardContent className="pt-6 space-y-2">
+            <CardContent className="pt-6 space-y-3">
               <Label htmlFor="presc">Prescrições</Label>
               <Textarea
                 id="presc"
                 value={form.prescricoes}
                 onChange={(e) => set("prescricoes")(e.target.value)}
-                rows={6}
+                rows={8}
                 disabled={!canEdit}
+                placeholder="Ex.: Amoxicilina 500mg — 1 cápsula via oral de 8/8h por 7 dias..."
               />
+              <div className="pt-2 border-t">
+                <p className="text-xs text-muted-foreground mb-2">
+                  Compartilhar ou assinar esta prescrição:
+                </p>
+                <PrescricaoActions
+                  prescricao={form.prescricoes}
+                  paciente={paciente}
+                  alunoNome={user?.user_metadata?.nome ?? user?.email ?? null}
+                  dataAtendimento={initial?.data_atendimento ?? new Date().toISOString()}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
+
 
         <TabsContent value="dados" className="space-y-4">
           <Card>

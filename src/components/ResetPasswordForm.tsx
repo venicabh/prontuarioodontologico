@@ -47,14 +47,14 @@ export function ResetPasswordForm() {
   return (
     <div
       className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
-      style={{
-        backgroundColor: "#cfcac4",
-        backgroundImage: "url(/dentista-bg.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
+      style={{ backgroundColor: "#cfcac4" }}
     >
+      <img
+        src="/dentista-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 h-full w-full object-contain object-right select-none"
+      />
       <Card className="w-full max-w-md relative z-10 shadow-2xl border-stone-300/60 bg-stone-50/95 backdrop-blur-sm">
         <CardHeader className="text-center">
           <div className="mx-auto mb-3 p-3 rounded-full bg-stone-200 w-fit">
