@@ -31,7 +31,6 @@ function LoginPage() {
   const { session, isPasswordRecovery } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already logged in
   if (session && !isPasswordRecovery) {
     navigate({ to: "/inicio" });
   }
@@ -93,97 +92,101 @@ function LoginPage() {
   };
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
-      style={{ backgroundColor: "#cfcac4" }}
-    >
-      <img
-        src="/dentista-bg.jpg"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top select-none"
-      />
-      <Card className="w-full max-w-md relative z-10 shadow-2xl border-stone-300/60 bg-stone-50/95 backdrop-blur-sm">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-3 p-3 rounded-full bg-stone-200 w-fit">
-            <OdontoSymbol className="h-8 w-8" />
-          </div>
-          <CardTitle className="text-2xl text-slate-800">Prontuário Odontológico Digital</CardTitle>
-          <CardDescription className="text-slate-500">Acesse o sistema com suas credenciais</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-stone-200">
-              <TabsTrigger value="login" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Entrar</TabsTrigger>
-              <TabsTrigger value="signup" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Cadastrar</TabsTrigger>
-            </TabsList>
+    <div className="flex min-h-screen">
+      {/* Coluna esquerda — formulário */}
+      <div className="flex flex-1 items-center justify-center px-6 py-12 bg-stone-100">
+        <Card className="w-full max-w-md shadow-2xl border-stone-300/60 bg-stone-50/95">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-3 p-3 rounded-full bg-stone-200 w-fit">
+              <OdontoSymbol className="h-8 w-8" />
+            </div>
+            <CardTitle className="text-2xl text-slate-800">Prontuário Odontológico Digital</CardTitle>
+            <CardDescription className="text-slate-500">Acesse o sistema com suas credenciais</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="login" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-stone-200">
+                <TabsTrigger value="login" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Entrar</TabsTrigger>
+                <TabsTrigger value="signup" className="data-[state=active]:bg-stone-700 data-[state=active]:text-white">Cadastrar</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">E-mail</Label>
-                  <Input id="login-email" name="email" type="email" required autoComplete="email" />
-                </div>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="login-senha">Senha</Label>
-                    <button
-                      type="button"
-                      onClick={() => navigate({ to: "/esqueci-senha" })}
-                      className="text-xs text-stone-700 hover:underline"
-                    >
-                      Esqueci minha senha
-                    </button>
+              <TabsContent value="login">
+                <form onSubmit={handleLogin} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">E-mail</Label>
+                    <Input id="login-email" name="email" type="email" required autoComplete="email" />
                   </div>
-                  <Input id="login-senha" name="senha" type="password" required autoComplete="current-password" />
-                </div>
-                <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
-                  {loading ? "Entrando..." : "Entrar"}
-                </Button>
-              </form>
-            </TabsContent>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="login-senha">Senha</Label>
+                      <button
+                        type="button"
+                        onClick={() => navigate({ to: "/esqueci-senha" })}
+                        className="text-xs text-stone-700 hover:underline"
+                      >
+                        Esqueci minha senha
+                      </button>
+                    </div>
+                    <Input id="login-senha" name="senha" type="password" required autoComplete="current-password" />
+                  </div>
+                  <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
+                    {loading ? "Entrando..." : "Entrar"}
+                  </Button>
+                </form>
+              </TabsContent>
 
-            <TabsContent value="signup">
-              <form onSubmit={handleSignup} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-nome">Nome completo</Label>
-                  <Input id="signup-nome" name="nome" required maxLength={120} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">E-mail</Label>
-                  <Input id="signup-email" name="email" type="email" required autoComplete="email" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-senha">Senha</Label>
-                  <Input id="signup-senha" name="senha" type="password" required minLength={6} autoComplete="new-password" />
-                </div>
-                <div className="space-y-2">
-                  <Label>Perfil</Label>
-                  <RadioGroup name="role" defaultValue="aluno" className="grid grid-cols-1 gap-2">
-                    <label className="flex items-center gap-3 rounded-md border p-3 cursor-pointer hover:bg-accent">
-                      <RadioGroupItem value="aluno" id="role-aluno" />
-                      <div>
-                        <div className="font-medium">Aluno</div>
-                        <div className="text-xs text-muted-foreground">Cadastra pacientes, agenda e realiza atendimentos</div>
-                      </div>
-                    </label>
-                    <label className="flex items-center gap-3 rounded-md border p-3 cursor-pointer hover:bg-accent">
-                      <RadioGroupItem value="professor_admin" id="role-prof" />
-                      <div>
-                        <div className="font-medium">Professor / Administrador</div>
-                        <div className="text-xs text-muted-foreground">Valida prontuários, gera relatórios, gerencia materiais e usuários</div>
-                      </div>
-                    </label>
-                  </RadioGroup>
-                </div>
-                <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
-                  {loading ? "Cadastrando..." : "Criar conta"}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+              <TabsContent value="signup">
+                <form onSubmit={handleSignup} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-nome">Nome completo</Label>
+                    <Input id="signup-nome" name="nome" required maxLength={120} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">E-mail</Label>
+                    <Input id="signup-email" name="email" type="email" required autoComplete="email" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-senha">Senha</Label>
+                    <Input id="signup-senha" name="senha" type="password" required minLength={6} autoComplete="new-password" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Perfil</Label>
+                    <RadioGroup name="role" defaultValue="aluno" className="grid grid-cols-1 gap-2">
+                      <label className="flex items-center gap-3 rounded-md border p-3 cursor-pointer hover:bg-accent">
+                        <RadioGroupItem value="aluno" id="role-aluno" />
+                        <div>
+                          <div className="font-medium">Aluno</div>
+                          <div className="text-xs text-muted-foreground">Cadastra pacientes, agenda e realiza atendimentos</div>
+                        </div>
+                      </label>
+                      <label className="flex items-center gap-3 rounded-md border p-3 cursor-pointer hover:bg-accent">
+                        <RadioGroupItem value="professor_admin" id="role-prof" />
+                        <div>
+                          <div className="font-medium">Professor / Administrador</div>
+                          <div className="text-xs text-muted-foreground">Valida prontuários, gera relatórios, gerencia materiais e usuários</div>
+                        </div>
+                      </label>
+                    </RadioGroup>
+                  </div>
+                  <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
+                    {loading ? "Cadastrando..." : "Criar conta"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Coluna direita — foto (só visível em telas lg+) */}
+      <div className="hidden lg:block w-1/2 relative">
+        <img
+          src="/dentista-bg.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
+        />
+      </div>
     </div>
   );
 }
