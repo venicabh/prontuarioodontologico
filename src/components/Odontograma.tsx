@@ -269,12 +269,13 @@ export function Odontograma({ value = {}, onChange, disabled }: Props) {
     onChange?.(next);
   };
 
-  const row = (nums: number[]) => (
-    <div className="flex gap-1">
+  const row = (nums: number[], flip = false) => (
+    <div className="flex gap-1 items-end">
       {nums.map((n) => (
         <Tooth
           key={n}
           num={n}
+          flip={flip}
           state={(value[String(n)] as ToothState) ?? "saudavel"}
           onSelect={(s) => setTooth(n, s)}
           disabled={disabled}
