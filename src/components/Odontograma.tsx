@@ -136,16 +136,22 @@ type Props = {
 function Tooth({
   num,
   state,
+  flip,
   onSelect,
   disabled,
 }: {
   num: number;
   state: ToothState;
+  flip?: boolean;
   onSelect: (s: ToothState) => void;
   disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const meta = STATE_META[state];
+  const t = toothType(num);
+  const paths = TOOTH_PATHS[t];
+  const gradId = `tg-${num}`;
+  const rootGradId = `rg-${num}`;
 
   return (
     <Popover open={open} onOpenChange={(o) => !disabled && setOpen(o)}>
@@ -153,23 +159,77 @@ function Tooth({
         <button
           type="button"
           disabled={disabled}
-          className="flex flex-col items-center gap-1 group focus:outline-none"
+          className="flex flex-col items-center gap-0.5 group focus:outline-none"
           aria-label={`Dente ${num} - ${meta.label}`}
         >
           <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground">
             {num}
           </span>
           <svg
-            viewBox="0 0 24 32"
+            viewBox="0 0 40 58"
             className={cn(
-              "w-6 h-8 transition-transform group-hover:scale-110",
+              "w-7 h-10 transition-transform group-hover:scale-110 drop-shadow-sm",
               !disabled && "cursor-pointer",
             )}
+            style={{
+              transform: flip ? "scaleY(-1)" : undefined,
+              opacity: meta.opacity ?? 1,
+            }}
           >
+            <defs>
+              <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffffff" />
+                <stop offset="55%" stopColor={meta.crown} />
+                <stop offset="100%" stopColor={meta.crown} stopOpacity="0.85" />
+              </linearGradient>
+              <linearGradient id={rootGradId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={meta.root} />
+                <stop offset="100%" stopColor={meta.root} stopOpacity="0.7" />
+              </linearGradient>
+            </defs>
+            {/* Root */}
             <path
-              d="M12 2 C5 2 3 8 3 14 C3 20 5 26 8 30 C9 31 10 30 10 28 L10 22 C10 20 11 19 12 19 C13 19 14 20 14 22 L14 28 C14 30 15 31 16 30 C19 26 21 20 21 14 C21 8 19 2 12 2 Z"
-              className={cn("stroke-[1.5] transition-colors", meta.color)}
+              d={paths.root}
+              fill={`url(#${rootGradId})`}
+              stroke={meta.rootStroke}
+              strokeWidth="1"
+              strokeLinejoin="round"
             />
+            {/* Crown */}
+            <path
+              d={paths.crown}
+              fill={`url(#${gradId})`}
+              stroke={meta.crownStroke}
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+            {/* Cusp/occlusal detail */}
+            {paths.cusps && (
+              <path
+                d={paths.cusps}
+                fill="none"
+                stroke={meta.crownStroke}
+                strokeOpacity="0.45"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+              />
+            )}
+            {/* Gum line highlight */}
+            <path
+              d={paths.crown}
+              fill="none"
+              stroke="#ffffff"
+              strokeOpacity="0.5"
+              strokeWidth="0.6"
+              strokeLinejoin="round"
+              transform="translate(0 0.5)"
+            />
+            {state === "extracao" && (
+              <>
+                <line x1="6" y1="6" x2="34" y2="52" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" />
+                <line x1="34" y1="6" x2="6" y2="52" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" />
+              </>
+            )}
           </svg>
         </button>
       </PopoverTrigger>
