@@ -27,6 +27,8 @@ type Paciente = {
   cpf?: string | null;
   data_nascimento?: string | null;
   observacoes?: string | null;
+  telefone?: string | null;
+  email?: string | null;
 };
 
 export type ProntuarioStatus = "rascunho" | "aguardando_validacao" | "validado" | "rejeitado";
