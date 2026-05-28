@@ -120,7 +120,7 @@ export function ProntuarioForm({
   useEffect(() => {
     supabase
       .from("pacientes")
-      .select("id, nome, cpf, data_nascimento, observacoes")
+      .select("id, nome, cpf, data_nascimento, observacoes, telefone, email")
       .order("nome")
       .then(({ data }) => setPacientes((data as Paciente[] | null) ?? []));
   }, []);
