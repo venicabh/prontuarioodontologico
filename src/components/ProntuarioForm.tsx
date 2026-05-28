@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Odontograma, type DentesMarcados } from "@/components/Odontograma";
 import { ResumoPaciente } from "@/components/ResumoPaciente";
+import { PrescricaoActions } from "@/components/PrescricaoActions";
 import { toast } from "sonner";
 import { z } from "zod";
 import { User, AlertTriangle } from "lucide-react";
