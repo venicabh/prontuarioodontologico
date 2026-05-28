@@ -361,18 +361,31 @@ export function ProntuarioForm({
 
         <TabsContent value="prescricoes" className="space-y-4">
           <Card>
-            <CardContent className="pt-6 space-y-2">
+            <CardContent className="pt-6 space-y-3">
               <Label htmlFor="presc">Prescrições</Label>
               <Textarea
                 id="presc"
                 value={form.prescricoes}
                 onChange={(e) => set("prescricoes")(e.target.value)}
-                rows={6}
+                rows={8}
                 disabled={!canEdit}
+                placeholder="Ex.: Amoxicilina 500mg — 1 cápsula via oral de 8/8h por 7 dias..."
               />
+              <div className="pt-2 border-t">
+                <p className="text-xs text-muted-foreground mb-2">
+                  Compartilhar ou assinar esta prescrição:
+                </p>
+                <PrescricaoActions
+                  prescricao={form.prescricoes}
+                  paciente={paciente}
+                  alunoNome={user?.user_metadata?.nome ?? user?.email ?? null}
+                  dataAtendimento={initial?.data_atendimento ?? new Date().toISOString()}
+                />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
+
 
         <TabsContent value="dados" className="space-y-4">
           <Card>
