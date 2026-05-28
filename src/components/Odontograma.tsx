@@ -16,28 +16,109 @@ export type ToothState =
 
 export type DentesMarcados = Record<string, ToothState>;
 
-const STATE_META: Record<
-  ToothState,
-  { label: string; color: string; dot: string }
-> = {
-  saudavel: { label: "Saudável", color: "fill-background stroke-border", dot: "bg-muted" },
-  carie: { label: "Cárie", color: "fill-amber-200 stroke-amber-600", dot: "bg-amber-500" },
+type StateMeta = {
+  label: string;
+  dot: string;
+  crown: string; // fill
+  crownStroke: string;
+  root: string;
+  rootStroke: string;
+  opacity?: number;
+};
+
+const STATE_META: Record<ToothState, StateMeta> = {
+  saudavel: {
+    label: "Saudável",
+    dot: "bg-muted",
+    crown: "#fdfcf7",
+    crownStroke: "#c8c2b0",
+    root: "#f3ead4",
+    rootStroke: "#b8a878",
+  },
+  carie: {
+    label: "Cárie",
+    dot: "bg-amber-500",
+    crown: "#fde68a",
+    crownStroke: "#b45309",
+    root: "#f3ead4",
+    rootStroke: "#b8a878",
+  },
   restauracao: {
     label: "Restauração",
-    color: "fill-blue-200 stroke-blue-600",
     dot: "bg-blue-500",
+    crown: "#bfdbfe",
+    crownStroke: "#1d4ed8",
+    root: "#f3ead4",
+    rootStroke: "#b8a878",
   },
   tratamento: {
     label: "Tratamento",
-    color: "fill-emerald-200 stroke-emerald-600",
     dot: "bg-emerald-500",
+    crown: "#a7f3d0",
+    crownStroke: "#047857",
+    root: "#f3ead4",
+    rootStroke: "#b8a878",
   },
   extracao: {
     label: "Extração",
-    color: "fill-red-200 stroke-red-600",
     dot: "bg-red-500",
+    crown: "#fecaca",
+    crownStroke: "#b91c1c",
+    root: "#fecaca",
+    rootStroke: "#b91c1c",
   },
-  ausente: { label: "Ausente", color: "fill-muted stroke-muted-foreground", dot: "bg-muted-foreground" },
+  ausente: {
+    label: "Ausente",
+    dot: "bg-muted-foreground",
+    crown: "#e5e7eb",
+    crownStroke: "#9ca3af",
+    root: "#e5e7eb",
+    rootStroke: "#9ca3af",
+    opacity: 0.35,
+  },
+};
+
+// Tooth type by FDI second digit (1-8)
+type ToothType = "incisor" | "canine" | "premolar" | "molar";
+function toothType(num: number): ToothType {
+  const pos = num % 10;
+  if (pos <= 2) return "incisor";
+  if (pos === 3) return "canine";
+  if (pos <= 5) return "premolar";
+  return "molar";
+}
+
+// SVG paths for crown + root, drawn in a 40x56 viewBox (upper tooth: root down)
+// We'll flip vertically for the lower arch.
+const TOOTH_PATHS: Record<ToothType, { crown: string; root: string; cusps?: string }> = {
+  incisor: {
+    // flat wide crown, single tapered root
+    crown:
+      "M8 4 Q8 2 12 2 L28 2 Q32 2 32 4 L33 22 Q33 26 28 27 L12 27 Q7 26 7 22 Z",
+    root: "M11 26 Q10 40 14 52 Q20 56 26 52 Q30 40 29 26 Z",
+    cusps: "M10 22 L30 22",
+  },
+  canine: {
+    // pointed crown, long single root
+    crown:
+      "M9 6 Q10 2 14 2 Q20 2 20 1 Q20 2 26 2 Q30 2 31 6 L33 22 Q33 26 28 27 L12 27 Q7 26 7 22 Z",
+    root: "M10 26 Q8 44 14 54 Q20 58 26 54 Q32 44 30 26 Z",
+    cusps: "M20 3 L20 14",
+  },
+  premolar: {
+    // two small cusps, single/bifid root
+    crown:
+      "M8 6 Q9 2 13 2 Q16 2 17 5 Q18 8 20 8 Q22 8 23 5 Q24 2 27 2 Q31 2 32 6 L33 22 Q33 26 28 27 L12 27 Q7 26 7 22 Z",
+    root: "M11 26 Q9 40 13 52 Q16 55 17 50 L17 36 Q18 34 20 34 Q22 34 23 36 L23 50 Q24 55 27 52 Q31 40 29 26 Z",
+    cusps: "M13 12 L17 16 M27 12 L23 16",
+  },
+  molar: {
+    // wide crown with 4 cusps, 2-3 roots
+    crown:
+      "M6 8 Q7 2 12 2 Q15 2 16 5 Q17 8 20 8 Q23 8 24 5 Q25 2 28 2 Q33 2 34 8 L35 24 Q35 28 30 29 L10 29 Q5 28 5 24 Z",
+    root: "M9 28 Q7 42 10 52 Q13 55 14 50 L14 36 Q15 34 17 34 Q19 34 19 38 L19 50 Q20 55 22 52 Q24 55 25 50 L25 38 Q25 34 27 34 Q29 34 29 36 L29 50 Q30 55 33 52 Q35 42 31 28 Z",
+    cusps: "M10 14 L16 18 M30 14 L24 18 M16 22 L24 22",
+  },
 };
 
 // FDI numbering
