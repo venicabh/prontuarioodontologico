@@ -179,14 +179,14 @@ function LoginPage() {
       </div>
 
       {/* Coluna direita — foto (só visível em telas lg+) */}
-      <div className="hidden lg:block w-1/2 relative">
+      <div className="hidden lg:flex w-1/2 items-center justify-center bg-stone-100">
         <img
-          src="/dentista-bg.jpg"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-top select-none pointer-events-none"
-        />
-      </div>
+        src="/dentista-bg.jpg"
+        alt=""
+        aria-hidden="true"
+        className="h-full w-full object-contain select-none pointer-events-none"
+       />
+    </div>
     </div>
   );
 }
