@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   Activity,
   AlertOctagon,
@@ -9,6 +11,7 @@ import {
   HeartPulse,
   Stethoscope,
   TrendingUp,
+  Pencil,
 } from "lucide-react";
 import type { DentesMarcados, ToothState } from "@/components/Odontograma";
 
@@ -62,6 +65,7 @@ function summarizeDentes(dentes: DentesMarcados | null | undefined) {
 }
 
 export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
+  const navigate = useNavigate();
   const [prontuarios, setProntuarios] = useState<ProntuarioRow[]>([]);
   const [agendamentos, setAgendamentos] = useState<AgendamentoRow[]>([]);
   const [paciente, setPaciente] = useState<{
@@ -105,17 +109,13 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
       setLoading(false);
     });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [pacienteId]);
-
 
   const outros = prontuarios.filter((p) => p.id !== currentProntuarioId);
   const ultimo = outros[0];
   const ultimoSummary = summarizeDentes(ultimo?.dentes_marcados);
 
-  // Tratamentos atuais: procedimentos em prontuários recentes não validados ou agendamentos futuros
   const tratamentosSet = new Set<string>();
   outros.slice(0, 5).forEach((p) => {
     if (p.procedimentos_realizados) {
@@ -128,7 +128,6 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
   });
   const tratamentos = Array.from(tratamentosSet).slice(0, 4);
 
-  // Condições dentárias: agregando dentes marcados de prontuários recentes (exceto saudável/ausente)
   const condicoesCount = new Map<ToothState, number>();
   outros.slice(0, 5).forEach((p) => {
     const s = summarizeDentes(p.dentes_marcados);
@@ -138,7 +137,6 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
     });
   });
 
-  // Evolução
   const totalConsultas = outros.length;
   const validados = outros.filter((p) => p.status === "validado").length;
   const ultimaData = ultimo?.data_atendimento;
@@ -151,15 +149,14 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
       <CardContent className="pt-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold">Resumo do Paciente</h3>
-          {loading && (
-            <span className="text-xs text-muted-foreground">Carregando...</span>
-          )}
+          {loading && <span className="text-xs text-muted-foreground">Carregando...</span>}
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 mb-3">
+          {/* Alergias */}
           <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/40 p-3">
             <AlertOctagon className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 flex-1">
               <p className="text-xs font-semibold text-red-900 dark:text-red-200 uppercase tracking-wide">
                 Alergias
               </p>
@@ -167,10 +164,21 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
                 {paciente?.alergias || "Nenhuma informada"}
               </p>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 text-red-600 hover:text-red-800 shrink-0"
+              title="Editar alergias"
+              onClick={() => navigate({ to: "/pacientes/$pacienteId", params: { pacienteId } })}
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
           </div>
+
+          {/* Doenças pré-existentes */}
           <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-900/40 p-3">
             <HeartPulse className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 flex-1">
               <p className="text-xs font-semibold text-amber-900 dark:text-amber-200 uppercase tracking-wide">
                 Doenças pré-existentes
               </p>
@@ -178,15 +186,37 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
                 {paciente?.doencas_preexistentes || "Nenhuma informada"}
               </p>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0 text-amber-600 hover:text-amber-800 shrink-0"
+              title="Editar doenças pré-existentes"
+              onClick={() => navigate({ to: "/pacientes/$pacienteId", params: { pacienteId } })}
+            >
+              <Pencil className="h-3 w-3" />
+            </Button>
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {/* Último Exame Dentário */}
+          {/* Último Exame */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <Stethoscope className="h-3.5 w-3.5" />
-              Último Exame
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <Stethoscope className="h-3.5 w-3.5" />
+                Último Exame
+              </div>
+              {ultimo && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                  title="Editar último prontuário"
+                  onClick={() => navigate({ to: "/prontuarios/$prontuarioId", params: { prontuarioId: ultimo.id } })}
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+              )}
             </div>
             {ultimo ? (
               <>
@@ -200,9 +230,7 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
                     .map(([k, v]) => (
                       <div key={k} className="flex items-center gap-2 text-xs">
                         <span className={`h-2 w-2 rounded-full ${TOOTH_DOT[k]}`} />
-                        <span>
-                          {TOOTH_LABEL[k]} ({v})
-                        </span>
+                        <span>{TOOTH_LABEL[k]} ({v})</span>
                       </div>
                     ))}
                   {ultimoSummary.size === 0 && (
@@ -217,9 +245,22 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
 
           {/* Tratamentos Atuais */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <ClipboardList className="h-3.5 w-3.5" />
-              Tratamentos Atuais
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <ClipboardList className="h-3.5 w-3.5" />
+                Tratamentos Atuais
+              </div>
+              {ultimo && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                  title="Editar prontuário"
+                  onClick={() => navigate({ to: "/prontuarios/$prontuarioId", params: { prontuarioId: ultimo.id } })}
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+              )}
             </div>
             {tratamentos.length > 0 ? (
               <ul className="space-y-1">
@@ -237,18 +278,29 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
 
           {/* Condições Dentárias */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <Activity className="h-3.5 w-3.5" />
-              Condições Dentárias
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <Activity className="h-3.5 w-3.5" />
+                Condições Dentárias
+              </div>
+              {ultimo && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                  title="Editar prontuário"
+                  onClick={() => navigate({ to: "/prontuarios/$prontuarioId", params: { prontuarioId: ultimo.id } })}
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
+              )}
             </div>
             {condicoesCount.size > 0 ? (
               <div className="space-y-1">
                 {Array.from(condicoesCount.entries()).slice(0, 4).map(([k, v]) => (
                   <div key={k} className="flex items-center gap-2 text-xs">
                     <span className={`h-2 w-2 rounded-full ${TOOTH_DOT[k]}`} />
-                    <span>
-                      {TOOTH_LABEL[k]} ({v})
-                    </span>
+                    <span>{TOOTH_LABEL[k]} ({v})</span>
                   </div>
                 ))}
               </div>
@@ -259,9 +311,20 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
 
           {/* Próximas Consultas */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <CalendarClock className="h-3.5 w-3.5" />
-              Próximas Consultas
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <CalendarClock className="h-3.5 w-3.5" />
+                Próximas Consultas
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                title="Ir para agenda"
+                onClick={() => navigate({ to: "/agenda" })}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
             </div>
             {agendamentos.length > 0 ? (
               <ul className="space-y-1.5">
@@ -270,7 +333,7 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
                   return (
                     <li key={a.id} className="text-xs">
                       <p className="font-medium">
-                        {d.toLocaleDateString("pt-BR")} {" "}
+                        {d.toLocaleDateString("pt-BR")}{" "}
                         {d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                       </p>
                       {a.procedimento && (
@@ -287,9 +350,20 @@ export function ResumoPaciente({ pacienteId, currentProntuarioId }: Props) {
 
           {/* Evolução do Tratamento */}
           <div className="rounded-lg border bg-card p-3 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5" />
-              Evolução do Tratamento
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <TrendingUp className="h-3.5 w-3.5" />
+                Evolução do Tratamento
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground"
+                title="Ver todos os prontuários"
+                onClick={() => navigate({ to: "/prontuarios" })}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
