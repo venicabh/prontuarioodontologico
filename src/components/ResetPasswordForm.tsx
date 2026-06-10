@@ -41,48 +41,49 @@ export function ResetPasswordForm() {
     clearPasswordRecoverySession();
     toast.success("Senha redefinida com sucesso");
     await supabase.auth.signOut();
-    window.location.assign("/login");
+    window.location.assign("https://prontuarioodontologico-aokb.vercel.app/login");
   };
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-start px-4 md:px-16 relative overflow-hidden"
-      style={{ backgroundColor: "#cfcac4" }}
-    >
-      <img
-        src="/dentista-bg.jpg"
-        alt=""
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full object-cover object-top select-none"
-      />
-      <Card className="w-full max-w-md relative z-10 shadow-2xl border-stone-300/60 bg-stone-50/95 backdrop-blur-sm">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-3 p-3 rounded-full bg-stone-200 w-fit">
-            <OdontoSymbol className="h-8 w-8" />
-          </div>
-          <CardTitle className="text-2xl text-slate-800">Redefinir senha</CardTitle>
-          <CardDescription>
-            {ready ? "Crie uma nova senha para sua conta" : "Validando link..."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {ready && (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="senha">Nova senha</Label>
-                <Input id="senha" name="senha" type="password" required minLength={6} autoComplete="new-password" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="confirma">Confirmar senha</Label>
-                <Input id="confirma" name="confirma" type="password" required minLength={6} autoComplete="new-password" />
-              </div>
-              <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
-                {loading ? "Salvando..." : "Redefinir senha"}
-              </Button>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+    <div className="flex min-h-screen">
+      <div className="flex flex-1 items-center justify-center px-6 py-12 bg-stone-100">
+        <Card className="w-full max-w-md shadow-2xl border-stone-300/60 bg-stone-50/95">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-3 p-3 rounded-full bg-stone-200 w-fit">
+              <OdontoSymbol className="h-8 w-8" />
+            </div>
+            <CardTitle className="text-2xl text-slate-800">Redefinir senha</CardTitle>
+            <CardDescription>
+              {ready ? "Crie uma nova senha para sua conta" : "Validando link..."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {ready && (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="senha">Nova senha</Label>
+                  <Input id="senha" name="senha" type="password" required minLength={6} autoComplete="new-password" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirma">Confirmar senha</Label>
+                  <Input id="confirma" name="confirma" type="password" required minLength={6} autoComplete="new-password" />
+                </div>
+                <Button type="submit" className="w-full bg-stone-700 hover:bg-stone-800 text-white" disabled={loading}>
+                  {loading ? "Salvando..." : "Redefinir senha"}
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      <div className="hidden lg:flex w-1/2 items-center justify-center bg-stone-100">
+        <img
+          src="/dentista-bg.jpg"
+          alt=""
+          aria-hidden="true"
+          className="h-full max-h-screen w-auto object-contain select-none pointer-events-none"
+        />
+      </div>
     </div>
   );
 }
