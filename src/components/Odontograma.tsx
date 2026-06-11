@@ -170,9 +170,8 @@ function Tooth({
           >
             <defs>
               <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ffffff" />
-                <stop offset="55%" stopColor={meta.crown} />
-                <stop offset="100%" stopColor={meta.crown} stopOpacity="0.85" />
+                <stop offset="0%" stopColor={meta.crown} stopOpacity="0.9" />
+                 <stop offset="100%" stopColor={meta.crown} stopOpacity="1" />
               </linearGradient>
               <linearGradient id={rootGradId} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={meta.root} />
